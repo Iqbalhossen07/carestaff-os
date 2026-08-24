@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------------------------------
+// 1. Core Architecture (Panel A Roles & Multi-tenant setup)
+// ------------------------------------------------------
+
+model CareHome {
+  id          String   @id @default(uuid())
+  name        String
+  branchCode  String?
+  address     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users       User[]
+  roles       Role[]
+  residents   Resident[]
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String
+  careHomeId  String
+  careHome    CareHome @relation(fields: [careHomeId], references: [id])
+  
+  // Granular Permission Flags
+  canViewEmar       Boolean @default(false)
+  canEditRota       Boolean @default(false)
+  canViewFinance    Boolean @default(false)
+  canManageKitchen  Boolean @default(false)
+  isSuperAdmin      Boolean @default(false)
+
+  users       User[]
+  
+  @@unique([name, careHomeId])
+}
+
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  password    String
+  name        String
+  phone       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  careHomeId  String
+  careHome    CareHome @relation(fields: [careHomeId], references: [id])
+  
+  roleId      String?
+  role        Role?    @relation(fields: [roleId], references: [id])
+  
+  // Specific role flag (Admin, Worker, Client)
+  userType    UserType @default(WORKER)
+}
+
+enum UserType {
+  SUPER_ADMIN
+  ADMIN
+  WORKER
+  CLIENT
+}
+
+// ------------------------------------------------------
+// 2. Resident & Medical Schema
+// ------------------------------------------------------
+
+model Resident {
+  id              String   @id @default(uuid())
+  firstName       String
+  lastName        String
+  nhsNumber       String?
+  dateOfBirth     DateTime
+  roomNumber      String?
+  dietaryNeeds    String?
+  
+  careHomeId      String
+  careHome        CareHome @relation(fields: [careHomeId], references: [id])
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Note: eMAR, Shifts, Handover, Billing schemas will be added in the next step.
