@@ -41,7 +41,7 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 bg-gray-900 text-white min-h-screen flex flex-col h-full overflow-y-auto">
+    <aside className="w-full lg:w-64 bg-gray-900 text-white min-h-screen flex flex-col h-full overflow-y-auto">
       <div className="p-6 flex justify-between items-center shrink-0">
         <div>
           <h2 className="text-2xl font-bold text-blue-400">CareStaff OS</h2>
