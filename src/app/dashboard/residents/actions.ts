@@ -30,3 +30,10 @@ export async function createResident(formData: FormData, careHomeId: string) {
   revalidatePath("/dashboard");
   redirect("/dashboard/residents");
 }
+
+export async function deleteResident(id: string) {
+  await prisma.resident.delete({
+    where: { id },
+  });
+  revalidatePath("/dashboard/residents");
+}

@@ -30,3 +30,11 @@ export async function createStaffMember(formData: FormData, careHomeId: string) 
   revalidatePath("/dashboard/staff");
   revalidatePath("/dashboard"); // To update total staff count
 }
+
+export async function deleteStaff(id: string) {
+  await prisma.user.delete({
+    where: { id },
+  });
+  revalidatePath("/dashboard/staff");
+  revalidatePath("/dashboard");
+}

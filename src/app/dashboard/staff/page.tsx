@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { Users, Mail, ShieldCheck } from "lucide-react";
 import { AddStaffForm } from "./StaffClientComponents";
 import { ActionButtons } from "@/components/ActionButtons";
+import { deleteStaff } from "./actions";
 
 export default async function StaffPage() {
   const session = await getServerSession(authOptions);
@@ -71,6 +72,7 @@ export default async function StaffPage() {
                     <ActionButtons 
                       viewUrl={`/dashboard/staff/${staff.id}`} 
                       editUrl={`/dashboard/staff/${staff.id}/edit`}
+                      deleteAction={staff.userType !== "SUPER_ADMIN" ? deleteStaff.bind(null, staff.id) : undefined}
                     />
                   </div>
                 </div>

@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import Link from "next/link";
 import { Plus, User, Calendar, Hash } from "lucide-react";
 import { ActionButtons } from "@/components/ActionButtons";
+import { deleteResident } from "./actions";
 
 export default async function ResidentsPage() {
   const session = await getServerSession(authOptions);
@@ -92,6 +93,7 @@ export default async function ResidentsPage() {
                     <ActionButtons 
                       viewUrl={`/dashboard/residents/${resident.id}`}
                       editUrl={`/dashboard/residents/${resident.id}/edit`}
+                      deleteAction={deleteResident.bind(null, resident.id)}
                     />
                   </td>
                 </tr>
