@@ -15,6 +15,7 @@ import {
   Wrench,
   UserCheck,
   ShieldAlert,
+  PoundSterling,
   LogOut 
 } from "lucide-react";
 import { signOut } from "next-auth/react";
@@ -31,6 +32,7 @@ const navItems = [
   { name: "Maintenance", href: "/dashboard/maintenance", icon: Wrench },
   { name: "Visitor Logs", href: "/dashboard/visitors", icon: UserCheck },
   { name: "Safeguarding", href: "/dashboard/incidents", icon: ShieldAlert },
+  { name: "Finance & Billing", href: "/dashboard/finance", icon: PoundSterling },
   { name: "Reports & Compliance", href: "/dashboard/reports", icon: FileText },
   { name: "Global Settings", href: "/dashboard/settings", icon: Settings },
 ];
