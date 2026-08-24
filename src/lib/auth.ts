@@ -43,6 +43,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           name: user.name,
+          image: user.image,
           userType: user.userType,
           careHomeId: user.careHomeId,
           role: user.role,
@@ -51,13 +52,21 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
         token.userType = (user as any).userType;
         token.careHomeId = (user as any).careHomeId;
         token.role = (user as any).role;
+        token.picture = user.image; // standardize field for next-auth
       }
+      
+      // Update session manually when trigger === "update"
+      if (trigger === "update" && session?.user) {
+        if (session.user.name) token.name = session.user.name;
+        if (session.user.image) token.picture = session.user.image;
+      }
+      
       return token;
     },
     async session({ session, token }) {
@@ -68,6 +77,7 @@ export const authOptions: NextAuthOptions = {
           userType: token.userType as string,
           careHomeId: token.careHomeId as string,
           role: token.role as any,
+          image: token.picture as string | null | undefined,
         };
       }
       return session;

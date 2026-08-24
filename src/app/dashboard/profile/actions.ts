@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 export async function updateProfile(userId: string, formData: FormData) {
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
+  const image = formData.get("image") as string | null;
 
   if (!name || !email) {
     throw new Error("Name and Email are required");
@@ -18,9 +19,14 @@ export async function updateProfile(userId: string, formData: FormData) {
     throw new Error("Email is already in use by another account");
   }
 
+  const dataToUpdate: any = { name, email };
+  if (image) {
+    dataToUpdate.image = image;
+  }
+
   await prisma.user.update({
     where: { id: userId },
-    data: { name, email },
+    data: dataToUpdate,
   });
 
   revalidatePath("/dashboard/profile");
