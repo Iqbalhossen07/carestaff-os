@@ -63,18 +63,18 @@ export default async function FinancePage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-1">
-          <CreateInvoiceForm careHomeId={careHomeId} residents={residents} />
-        </div>
+      <div className="flex justify-end mb-6">
+        <a href="/dashboard/finance/new" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-sm">
+          + Create Invoice
+        </a>
+      </div>
 
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-gray-500"/> Invoice Ledger
-              </h2>
-            </div>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+          <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <FileText className="w-5 h-5 text-gray-500"/> Invoice Ledger
+          </h2>
+        </div>
             
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-sm">
@@ -123,8 +123,6 @@ export default async function FinancePage() {
               </table>
             </div>
           </div>
-        </div>
-      </div>
     </div>
   );
 }
