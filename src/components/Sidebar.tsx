@@ -37,17 +37,24 @@ const navItems = [
   { name: "Global Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 bg-gray-900 text-white min-h-screen flex flex-col">
-      <div className="p-6">
-        <h2 className="text-2xl font-bold text-blue-400">CareStaff OS</h2>
-        <p className="text-gray-400 text-sm mt-1">Admin Panel</p>
+    <aside className="w-64 bg-gray-900 text-white min-h-screen flex flex-col h-full overflow-y-auto">
+      <div className="p-6 flex justify-between items-center shrink-0">
+        <div>
+          <h2 className="text-2xl font-bold text-blue-400">CareStaff OS</h2>
+          <p className="text-gray-400 text-sm mt-1">Admin Panel</p>
+        </div>
+        {onClose && (
+          <button onClick={onClose} className="lg:hidden p-1 bg-gray-800 rounded text-gray-400 hover:text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        )}
       </div>
 
-      <nav className="flex-1 px-4 space-y-2 mt-4">
+      <nav className="flex-1 px-4 space-y-1 mb-4">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = item.href === '/dashboard' 

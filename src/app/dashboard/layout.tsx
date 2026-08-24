@@ -1,4 +1,4 @@
-import Sidebar from "@/components/Sidebar";
+import DashboardLayoutClient from "@/components/DashboardLayoutClient";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
@@ -27,13 +27,8 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <Sidebar />
-      <main className="flex-1 p-8 overflow-y-auto">
-        <div className="max-w-7xl mx-auto">
-          {children}
-        </div>
-      </main>
-    </div>
+    <DashboardLayoutClient>
+      {children}
+    </DashboardLayoutClient>
   );
 }
