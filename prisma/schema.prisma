@@ -23,6 +23,8 @@ model CareHome {
   roles       Role[]
   residents   Resident[]
   shifts      Shift[]
+  enquiries   Enquiry[]
+  maintenanceTickets MaintenanceTicket[]
 }
 
 model Role {
@@ -126,7 +128,7 @@ model EmarLog {
   medication    Medication @relation(fields: [medicationId], references: [id])
   
   residentId    String
-  resident      Resident   @relation(fields: [residentId], references: [id])
+  resident    Resident   @relation(fields: [residentId], references: [id])
   
   administeredById String
   administeredBy   User     @relation(fields: [administeredById], references: [id])
@@ -214,4 +216,29 @@ model FamilyLink {
   
   residentId  String
   resident    Resident @relation(fields: [residentId], references: [id])
+}
+
+model Enquiry {
+  id          String   @id @default(uuid())
+  careHomeId  String
+  careHome    CareHome @relation(fields: [careHomeId], references: [id])
+  name        String
+  contactInfo String
+  status      String   @default("NEW") // NEW, CONTACTED, ADMITTED, LOST
+  notes       String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model MaintenanceTicket {
+  id          String   @id @default(uuid())
+  careHomeId  String
+  careHome    CareHome @relation(fields: [careHomeId], references: [id])
+  title       String
+  description String   @db.Text
+  status      String   @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED
+  priority    String   @default("MEDIUM") // LOW, MEDIUM, HIGH
+  reportedBy  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
