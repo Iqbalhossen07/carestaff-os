@@ -12,13 +12,13 @@ export default async function CarerLayout({
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect("/login");
+    redirect("/carer/login");
   }
 
   // Authorization: Only WORKER can access Panel B (Carer panel)
   // But maybe SUPER_ADMIN/ADMIN can also access it for testing? Let's allow admins too for flexibility.
   if (!session.user.userType) {
-    redirect("/login");
+    redirect("/carer/login");
   }
 
   const user = await prisma.user.findUnique({

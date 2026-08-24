@@ -4,15 +4,17 @@ import { signIn, getSession } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function LoginPage() {
+export default function CarerLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     const res = await signIn("credentials", {
       email,
@@ -27,23 +29,27 @@ export default function LoginPage() {
       const session = await getSession();
       if (session?.user?.userType === "WORKER") {
         router.push("/carer");
-      } else if (session?.user?.userType === "CLIENT") {
-        router.push("/family");
-      } else {
+      } else if (session?.user?.userType === "SUPER_ADMIN" || session?.user?.userType === "ADMIN") {
         router.push("/dashboard");
+      } else {
+        router.push("/");
       }
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-100 p-8 relative z-10">
+    <div className="min-h-screen flex items-center justify-center bg-blue-50 p-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-blue-100 p-8 relative z-10">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <img src="/logo.svg" alt="Logo" className="w-16 h-16 rounded-2xl shadow-md" />
+            <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl shadow-md flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </div>
           </div>
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight">Admin Portal</h1>
-          <p className="text-gray-500 mt-2 font-medium">Sign in to manage your care home</p>
+          <h1 className="text-3xl font-black text-gray-900 tracking-tight">Staff Portal</h1>
+          <p className="text-gray-500 mt-2 font-medium">Sign in to view your rota and tasks</p>
         </div>
 
         {error && (
@@ -59,8 +65,8 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all outline-none"
-              placeholder="admin@carehome.com"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
+              placeholder="carer@carehome.com"
               required
             />
           </div>
@@ -71,7 +77,7 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all outline-none"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
               placeholder="••••••••"
               required
             />
@@ -80,20 +86,15 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gray-900 hover:bg-black text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:hover:shadow-md flex justify-center items-center gap-2"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:hover:shadow-md flex justify-center items-center gap-2"
           >
             {loading ? (
               <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
             ) : (
-              "Sign In to Admin Portal"
+              "Sign In to Staff Portal"
             )}
           </button>
         </form>
-        
-        <div className="mt-6 text-center text-sm text-gray-500">
-          <p>Demo Admin: admin@sunrisecare.com / password123</p>
-          <p>Demo Worker: jane@sunrisecare.com / password123</p>
-        </div>
       </div>
     </div>
   );
