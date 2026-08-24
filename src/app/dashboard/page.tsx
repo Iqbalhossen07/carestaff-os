@@ -25,15 +25,55 @@ export default async function DashboardPage() {
     where: { careHomeId: session?.user?.careHomeId }
   });
   
-  // Dummy counts for features we haven't built tables for yet
-  const openShifts = 3;
-  const missedEmar = 0;
+  const now = new Date();
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  
+  const openShiftsCount = await prisma.shift.count({
+    where: { careHomeId: session?.user?.careHomeId, assignedToId: null, startTime: { gte: now } }
+  });
+
+  const missedEmarCount = await prisma.emarLog.count({
+    where: { resident: { careHomeId: session?.user?.careHomeId }, status: "MISSED", timestamp: { gte: startOfDay } }
+  });
+
+  // Calculate past 7 days activity
+  const last7Days = Array.from({length: 7}, (_, i) => {
+    const d = new Date(now);
+    d.setDate(d.getDate() - (6 - i));
+    return d;
+  });
+
+  const allIncidents = await prisma.incidentReport.findMany({
+    where: { careHomeId: session?.user?.careHomeId, createdAt: { gte: last7Days[0] } }
+  });
+
+  const allShifts = await prisma.shift.findMany({
+    where: { careHomeId: session?.user?.careHomeId, startTime: { gte: last7Days[0] } }
+  });
+
+  const weeklyData = last7Days.map(day => {
+    const dayStr = day.toLocaleDateString('en-US', { weekday: 'short' });
+    const incidents = allIncidents.filter(i => new Date(i.createdAt).toDateString() === day.toDateString()).length;
+    const shifts = allShifts.filter(s => new Date(s.startTime).toDateString() === day.toDateString()).length;
+    return { name: dayStr, incidents, shifts };
+  });
+
+  // Active staff on shift right now
+  const activeShifts = await prisma.shift.findMany({
+    where: { 
+      careHomeId: session?.user?.careHomeId, 
+      assignedToId: { not: null },
+      startTime: { lte: now },
+      endTime: { gte: now }
+    },
+    include: { assignedTo: true }
+  });
 
   const stats = [
     { title: "Total Care Staff", value: staffCount.toString(), icon: Users, color: "text-blue-600", bg: "bg-blue-100" },
     { title: "Active Residents", value: residentCount.toString(), icon: UserCheck, color: "text-green-600", bg: "bg-green-100" },
-    { title: "Open Shifts", value: openShifts.toString(), icon: Clock, color: "text-purple-600", bg: "bg-purple-100" },
-    { title: "Missed eMAR", value: missedEmar.toString(), icon: AlertTriangle, color: "text-red-600", bg: "bg-red-100" },
+    { title: "Open Shifts", value: openShiftsCount.toString(), icon: Clock, color: "text-purple-600", bg: "bg-purple-100" },
+    { title: "Missed eMAR", value: missedEmarCount.toString(), icon: AlertTriangle, color: "text-red-600", bg: "bg-red-100" },
   ];
 
   return (
@@ -74,7 +114,7 @@ export default async function DashboardPage() {
               Weekly Activity Overview
             </h2>
           </div>
-          <ActivityChart />
+          <ActivityChart data={weeklyData} />
         </div>
 
         {/* Action Center / Alerts */}
@@ -85,10 +125,10 @@ export default async function DashboardPage() {
           </h2>
           
           <div className="flex-1 space-y-4">
-            {missedEmar > 0 ? (
+            {missedEmarCount > 0 ? (
               <div className="p-4 bg-red-50 border border-red-100 rounded-lg">
                 <p className="text-sm font-bold text-red-800">Missed Medications!</p>
-                <p className="text-xs text-red-600 mt-1">There are {missedEmar} unadministered medications.</p>
+                <p className="text-xs text-red-600 mt-1">There are {missedEmarCount} unadministered medications.</p>
               </div>
             ) : (
               <div className="p-4 bg-green-50 border border-green-100 rounded-lg flex items-start gap-3">
@@ -100,11 +140,11 @@ export default async function DashboardPage() {
               </div>
             )}
 
-            {openShifts > 0 && (
+            {openShiftsCount > 0 && (
               <div className="p-4 bg-yellow-50 border border-yellow-100 rounded-lg flex items-start gap-3">
                 <div className="mt-0.5"><Clock className="w-4 h-4 text-yellow-600" /></div>
                 <div>
-                  <p className="text-sm font-bold text-yellow-800">{openShifts} Open Shifts</p>
+                  <p className="text-sm font-bold text-yellow-800">{openShiftsCount} Open Shifts</p>
                   <p className="text-xs text-yellow-700 mt-1">There are unfilled shifts for this week.</p>
                   <Link href="/dashboard/rota" className="text-xs font-semibold text-blue-600 mt-2 inline-block hover:underline">
                     Assign Staff &rarr;
@@ -123,10 +163,26 @@ export default async function DashboardPage() {
           Staff on Shift Today
         </h2>
         
-        <div className="text-center py-10 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
-          <p className="text-gray-500 text-sm">Rota system is not fully set up yet.</p>
-          <p className="text-gray-400 text-xs mt-1">Once you schedule shifts, active staff will appear here.</p>
-        </div>
+        {activeShifts.length === 0 ? (
+          <div className="text-center py-10 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
+            <p className="text-gray-500 text-sm">No staff currently on shift.</p>
+            <p className="text-gray-400 text-xs mt-1">Active staff will appear here when their shift starts.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {activeShifts.map(shift => (
+              <div key={shift.id} className="p-4 bg-gray-50 border border-gray-100 rounded-lg flex items-center gap-4">
+                <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
+                  {shift.assignedTo?.name?.charAt(0) || "U"}
+                </div>
+                <div>
+                  <p className="font-bold text-gray-900">{shift.assignedTo?.name}</p>
+                  <p className="text-xs text-gray-500">{shift.title}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

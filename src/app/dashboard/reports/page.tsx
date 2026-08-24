@@ -1,11 +1,16 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { FileText, Download, ShieldCheck, Activity } from "lucide-react";
+import { FileText, ShieldCheck, Activity } from "lucide-react";
+import { DownloadReportButton } from "./DownloadReportButton";
 
 export default async function ReportsPage() {
   const session = await getServerSession(authOptions);
   
+  const careHome = await prisma.careHome.findUnique({
+    where: { id: session?.user?.careHomeId }
+  });
+
   const emarLogs = await prisma.emarLog.findMany({
     where: { resident: { careHomeId: session?.user?.careHomeId } },
     include: { medication: true, resident: true, administeredBy: true },
@@ -25,9 +30,7 @@ export default async function ReportsPage() {
             <p className="text-gray-500 mt-1">CQC governance, audit trails, and data export.</p>
           </div>
         </div>
-        <button className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg font-medium transition-colors">
-          <Download className="w-5 h-5" /> Download CQC Report
-        </button>
+        <DownloadReportButton logs={emarLogs} careHomeName={careHome?.name || "Care Home"} />
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
