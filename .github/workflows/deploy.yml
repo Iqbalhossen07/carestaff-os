@@ -36,6 +36,8 @@ jobs:
             
             npm install
             npx prisma generate
+            npx prisma db push --accept-data-loss
+            node --experimental-transform-types prisma/seed.ts || npx ts-node prisma/seed.ts || true
             npm run build
             
             # Restart via pm2 if running, else start

@@ -6,9 +6,12 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Seeding database...');
 
-  // Create a Care Home
-  const home = await prisma.careHome.create({
-    data: {
+  // Create a Care Home (Upsert using a dummy unique branchCode)
+  const home = await prisma.careHome.upsert({
+    where: { id: 'default-home-id' }, // We'll just rely on a fixed ID for seeding
+    update: {},
+    create: {
+      id: 'default-home-id',
       name: 'Sunrise Care Home',
       branchCode: 'SUN-01',
       address: '123 Sunshine Avenue, London',
@@ -16,8 +19,10 @@ async function main() {
   });
 
   // Create a Super Admin Role
-  const superAdminRole = await prisma.role.create({
-    data: {
+  const superAdminRole = await prisma.role.upsert({
+    where: { name_careHomeId: { name: 'Super Admin', careHomeId: home.id } },
+    update: {},
+    create: {
       name: 'Super Admin',
       careHomeId: home.id,
       canViewEmar: true,
@@ -30,9 +35,11 @@ async function main() {
 
   const hashedPassword = await bcrypt.hash('password123', 10);
 
-  // Create Super Admin User
-  await prisma.user.create({
-    data: {
+  // Upsert Super Admin User
+  await prisma.user.upsert({
+    where: { email: 'admin@sunrisecare.com' },
+    update: {},
+    create: {
       name: 'Admin Manager',
       email: 'admin@sunrisecare.com',
       password: hashedPassword,
@@ -42,9 +49,11 @@ async function main() {
     }
   });
 
-  // Create a Care Worker User
-  await prisma.user.create({
-    data: {
+  // Upsert Care Worker User
+  await prisma.user.upsert({
+    where: { email: 'jane@sunrisecare.com' },
+    update: {},
+    create: {
       name: 'Jane Doe',
       email: 'jane@sunrisecare.com',
       password: hashedPassword,
