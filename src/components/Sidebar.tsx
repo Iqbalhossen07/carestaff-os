@@ -9,6 +9,7 @@ import {
   CalendarDays, 
   Pill, 
   FileText,
+  Settings,
   LogOut 
 } from "lucide-react";
 import { signOut } from "next-auth/react";
@@ -21,6 +22,7 @@ const navItems = [
   { name: "Rota & Shifts", href: "/dashboard/rota", icon: CalendarDays },
   { name: "eMAR Overview", href: "/dashboard/emar", icon: Pill },
   { name: "Reports", href: "/dashboard/reports", icon: FileText },
+  { name: "Global Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
 export default function Sidebar() {
