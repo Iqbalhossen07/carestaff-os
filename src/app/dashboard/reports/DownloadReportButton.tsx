@@ -27,7 +27,7 @@ export function DownloadReportButton({ logs, careHomeName }: { logs: any[], care
       }
 
       const tableColumn = ["Date & Time", "Resident", "Medication", "Status", "Staff"];
-      const tableRows = [];
+      const tableRows: any[][] = [];
 
       logs.forEach(log => {
         const rowData = [
