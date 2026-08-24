@@ -11,7 +11,7 @@ export default function DashboardLayoutClient({ children }: { children: React.Re
   const pathname = usePathname();
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen bg-gray-50 text-gray-900 overflow-hidden">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
