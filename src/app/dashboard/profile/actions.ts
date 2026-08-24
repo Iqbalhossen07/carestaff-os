@@ -30,7 +30,7 @@ export async function updateProfile(userId: string, formData: FormData) {
       const extension = image.split(";")[0].split("/")[1] || "png";
       const fileName = `profile-${userId}-${Date.now()}.${extension}`;
       
-      const uploadDir = path.join(process.cwd(), "public", "uploads");
+      const uploadDir = path.join(process.cwd(), "uploads");
       if (!fs.existsSync(uploadDir)) {
         fs.mkdirSync(uploadDir, { recursive: true });
       }
@@ -38,8 +38,8 @@ export async function updateProfile(userId: string, formData: FormData) {
       const filePath = path.join(uploadDir, fileName);
       fs.writeFileSync(filePath, Buffer.from(base64Data, 'base64'));
       
-      // We return the path for client update
-      image = `/uploads/${fileName}`;
+      // We return the API route path for client update
+      image = `/api/uploads/${fileName}`;
       dataToUpdate.image = image;
     } catch (e) {
       console.error("Failed to save image", e);
