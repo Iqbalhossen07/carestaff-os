@@ -34,6 +34,7 @@ const navItems = [
   { name: "Safeguarding", href: "/dashboard/incidents", icon: ShieldAlert },
   { name: "Finance & Billing", href: "/dashboard/finance", icon: PoundSterling },
   { name: "Reports & Compliance", href: "/dashboard/reports", icon: FileText },
+  { name: "My Profile", href: "/dashboard/profile", icon: UserCheck },
   { name: "Global Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
