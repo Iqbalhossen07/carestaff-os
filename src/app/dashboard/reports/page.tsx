@@ -9,7 +9,7 @@ export default async function ReportsPage() {
   const emarLogs = await prisma.emarLog.findMany({
     where: { resident: { careHomeId: session?.user?.careHomeId } },
     include: { medication: true, resident: true, administeredBy: true },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { timestamp: 'desc' },
     take: 50
   });
 
@@ -53,7 +53,7 @@ export default async function ReportsPage() {
               ) : (
                 emarLogs.map(log => (
                   <tr key={log.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-3 text-gray-600">{new Date(log.createdAt).toLocaleString()}</td>
+                    <td className="px-6 py-3 text-gray-600">{new Date(log.timestamp).toLocaleString()}</td>
                     <td className="px-6 py-3 font-medium text-gray-900">{log.resident.firstName} {log.resident.lastName}</td>
                     <td className="px-6 py-3 text-gray-600">{log.medication.name} ({log.medication.dosage})</td>
                     <td className="px-6 py-3">

@@ -8,7 +8,7 @@ export async function addMedication(formData: FormData) {
   const name = formData.get("name") as string;
   const dosage = formData.get("dosage") as string;
   const frequency = formData.get("frequency") as string;
-  const route = formData.get("route") as string;
+  const instructions = formData.get("instructions") as string;
 
   if (!residentId || !name || !dosage) {
     throw new Error("Missing required fields");
@@ -20,21 +20,21 @@ export async function addMedication(formData: FormData) {
       name,
       dosage,
       frequency,
-      route,
+      instructions,
     },
   });
 
   revalidatePath("/dashboard/emar");
 }
 
-export async function logMedicationAdmin(medicationId: string, residentId: string, staffId: string, status: string, notes?: string) {
+export async function logMedicationAdmin(medicationId: string, residentId: string, staffId: string, status: "ADMINISTERED" | "REFUSED" | "MISSED", refusalReason?: string) {
   await prisma.emarLog.create({
     data: {
       medicationId,
       residentId,
       administeredById: staffId,
       status,
-      notes,
+      refusalReason,
     },
   });
 

@@ -12,9 +12,9 @@ export default async function EmarPage() {
     include: {
       medications: {
         include: {
-          emarLogs: {
+          logs: {
             take: 1,
-            orderBy: { createdAt: 'desc' }
+            orderBy: { timestamp: 'desc' }
           }
         }
       }
@@ -53,11 +53,11 @@ export default async function EmarPage() {
                 ) : (
                   <div className="space-y-4">
                     {resident.medications.map(med => {
-                      const lastLog = med.emarLogs[0];
+                      const lastLog = med.logs[0];
                       let statusBadge = <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">Pending</span>;
                       
                       if (lastLog) {
-                        const isToday = new Date(lastLog.createdAt).toDateString() === new Date().toDateString();
+                        const isToday = new Date(lastLog.timestamp).toDateString() === new Date().toDateString();
                         if (isToday) {
                           if (lastLog.status === "ADMINISTERED") statusBadge = <span className="flex items-center gap-1 text-xs bg-green-100 text-green-700 px-2 py-1 rounded"><CheckCircle2 className="w-3 h-3"/> Given</span>;
                           if (lastLog.status === "REFUSED") statusBadge = <span className="flex items-center gap-1 text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded"><AlertCircle className="w-3 h-3"/> Refused</span>;
@@ -72,7 +72,7 @@ export default async function EmarPage() {
                               <span className="font-bold text-gray-900">{med.name}</span>
                               {statusBadge}
                             </div>
-                            <p className="text-sm text-gray-600">{med.dosage} • {med.route}</p>
+                            <p className="text-sm text-gray-600">{med.dosage} • {med.instructions}</p>
                             <p className="text-xs text-blue-600 font-medium mt-1">Schedule: {med.frequency}</p>
                           </div>
                           

@@ -25,7 +25,7 @@ export function CreateShiftForm({ careHomeId, staffMembers }: { careHomeId: stri
       
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Required Role</label>
-        <select name="roleRequired" required className="w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <select name="title" required className="w-full px-4 py-2 border border-gray-300 rounded-lg">
           <option value="Senior Nurse">Senior Nurse</option>
           <option value="Care Assistant">Care Assistant</option>
           <option value="Support Worker">Support Worker</option>
@@ -46,7 +46,7 @@ export function CreateShiftForm({ careHomeId, staffMembers }: { careHomeId: stri
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Assign to Staff (Optional)</label>
-        <select name="userId" className="w-full px-4 py-2 border border-gray-300 rounded-lg">
+        <select name="assignedToId" className="w-full px-4 py-2 border border-gray-300 rounded-lg">
           <option value="">-- Leave Open --</option>
           {staffMembers.map(staff => (
             <option key={staff.id} value={staff.id}>{staff.name} ({staff.email})</option>

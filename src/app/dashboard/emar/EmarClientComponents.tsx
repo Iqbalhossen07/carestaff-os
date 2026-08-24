@@ -57,13 +57,8 @@ export function AddMedicationForm({ residents }: { residents: any[] }) {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Route</label>
-          <select name="route" required className="w-full px-4 py-2 border rounded-lg">
-            <option value="Oral">Oral</option>
-            <option value="Injection">Injection</option>
-            <option value="Topical">Topical</option>
-            <option value="Inhalation">Inhalation</option>
-          </select>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Instructions</label>
+          <input type="text" name="instructions" placeholder="Take with food" className="w-full px-4 py-2 border rounded-lg" />
         </div>
       </div>
 
@@ -77,7 +72,7 @@ export function AddMedicationForm({ residents }: { residents: any[] }) {
 export function EmarActionButtons({ medicationId, residentId, staffId }: { medicationId: string, residentId: string, staffId: string }) {
   const [loading, setLoading] = useState(false);
 
-  const handleAction = async (status: string) => {
+  const handleAction = async (status: "ADMINISTERED" | "REFUSED" | "MISSED") => {
     setLoading(true);
     await logMedicationAdmin(medicationId, residentId, staffId, status);
     setLoading(false);

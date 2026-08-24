@@ -11,7 +11,7 @@ export default async function RotaPage() {
 
   const shifts = await prisma.shift.findMany({
     where: { careHomeId },
-    include: { user: true },
+    include: { assignedTo: true },
     orderBy: { startTime: 'asc' }
   });
 
@@ -54,7 +54,7 @@ export default async function RotaPage() {
                         <Clock className="w-6 h-6" />
                       </div>
                       <div>
-                        <h4 className="font-bold text-gray-900">{shift.roleRequired}</h4>
+                        <h4 className="font-bold text-gray-900">{shift.title}</h4>
                         <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
                           {new Date(shift.startTime).toLocaleString()} - {new Date(shift.endTime).toLocaleTimeString()}
                         </p>
@@ -62,10 +62,10 @@ export default async function RotaPage() {
                     </div>
                     
                     <div className="text-right">
-                      {shift.user ? (
+                      {shift.assignedTo ? (
                         <div className="flex items-center gap-2 bg-green-50 text-green-700 px-3 py-1.5 rounded-full text-sm font-medium border border-green-100">
                           <User className="w-4 h-4" />
-                          {shift.user.name}
+                          {shift.assignedTo.name}
                         </div>
                       ) : (
                         <div className="flex flex-col items-end gap-2">
