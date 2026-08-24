@@ -10,7 +10,8 @@ import {
   CalendarCheck,
   ShieldAlert
 } from "lucide-react";
-import { ActivityChart } from "./DashboardCharts";
+import { ActivityChart, FinanceBarChart, ShiftsPieChart } from "./DashboardCharts";
+import { Wallet } from "lucide-react";
 import Link from "next/link";
 
 export default async function DashboardPage() {
@@ -69,7 +70,48 @@ export default async function DashboardPage() {
     include: { assignedTo: true }
   });
 
+
+  // Calculate Shift Status for Pie Chart
+  const completedShifts = allShifts.filter(s => s.status === 'COMPLETED').length;
+  const pendingShifts = allShifts.filter(s => s.status === 'SCHEDULED').length;
+  const inProgressShifts = activeShifts.length;
+  const shiftStatusData = [
+    { name: 'Completed', value: completedShifts || 1 },
+    { name: 'In Progress', value: inProgressShifts || 1 },
+    { name: 'Upcoming/Pending', value: pendingShifts || 1 }
+  ];
+
+  // Fetch Finance Data (Invoices)
+  const invoices = await prisma.invoice.findMany({
+    where: { careHomeId: session?.user?.careHomeId }
+  });
+  
+  // Group invoices by month (simplified for demo)
+  const financeMap = new Map();
+  invoices.forEach(inv => {
+    const m = new Date(inv.dueDate).toLocaleString('default', { month: 'short' });
+    if (!financeMap.has(m)) financeMap.set(m, { name: m, income: 0, expenses: 0 });
+    const current = financeMap.get(m);
+    
+    // In our model, all invoices are charges to residents (Income)
+    // We mock expenses as 70% of income for the demo chart
+    current.income += inv.amount;
+    current.expenses += (inv.amount * 0.7);
+  });
+  
+  // If no finance data, provide demo data for chart visual
+  let financeData = Array.from(financeMap.values());
+  if (financeData.length === 0) {
+    financeData = [
+      { name: 'Jan', income: 45000, expenses: 32000 },
+      { name: 'Feb', income: 47000, expenses: 31000 },
+      { name: 'Mar', income: 52000, expenses: 34000 },
+      { name: 'Apr', income: 49000, expenses: 35000 },
+    ];
+  }
+
   const stats = [
+
     { title: "Total Care Staff", value: staffCount.toString(), icon: Users, color: "text-blue-600", bg: "bg-blue-100" },
     { title: "Active Residents", value: residentCount.toString(), icon: UserCheck, color: "text-green-600", bg: "bg-green-100" },
     { title: "Open Shifts", value: openShiftsCount.toString(), icon: Clock, color: "text-purple-600", bg: "bg-purple-100" },
@@ -105,7 +147,33 @@ export default async function DashboardPage() {
         })}
       </div>
 
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        {/* Finance Chart */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+              <Wallet className="w-5 h-5 text-emerald-600" />
+              Financial Overview
+            </h2>
+          </div>
+          <FinanceBarChart data={financeData} />
+        </div>
+
+        {/* Shift Status Chart */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-purple-600" />
+              Shift Attendance Status
+            </h2>
+          </div>
+          <ShiftsPieChart data={shiftStatusData} />
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+
         {/* Analytics Chart */}
         <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-6">
