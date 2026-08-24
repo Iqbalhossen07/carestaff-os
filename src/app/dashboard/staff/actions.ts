@@ -38,3 +38,25 @@ export async function deleteStaff(id: string) {
   revalidatePath("/dashboard/staff");
   revalidatePath("/dashboard");
 }
+
+export async function updateStaff(id: string, formData: FormData) {
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const roleId = formData.get("roleId") as string;
+
+  if (!name || !email) {
+    throw new Error("Name and Email are required");
+  }
+
+  await prisma.user.update({
+    where: { id },
+    data: {
+      name,
+      email,
+      roleId: roleId || null,
+    },
+  });
+
+  revalidatePath("/dashboard/staff");
+  revalidatePath(`/dashboard/staff/${id}`);
+}

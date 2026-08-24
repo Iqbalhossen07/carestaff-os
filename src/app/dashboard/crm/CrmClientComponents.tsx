@@ -21,8 +21,8 @@ export function AddEnquiryForm({ careHomeId }: { careHomeId: string }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 space-y-4">
-      <h3 className="font-bold text-gray-900 mb-4">New Enquiry</h3>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <h3 className="font-bold text-gray-900 text-xl mb-6">New Enquiry</h3>
       
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Resident/Family Name</label>
