@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createTicket, updateTicketStatus } from "./actions";
 import { CheckCircle2 } from "lucide-react";
+import { RichTextEditor } from "@/components/RichTextEditor";
 
 export function AddTicketForm({ careHomeId, userName }: { careHomeId: string, userName: string }) {
   const [loading, setLoading] = useState(false);
@@ -40,7 +41,7 @@ export function AddTicketForm({ careHomeId, userName }: { careHomeId: string, us
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-        <textarea name="description" required rows={4} placeholder="Describe the problem..." className="w-full px-4 py-2 border rounded-lg"></textarea>
+        <RichTextEditor name="description" placeholder="Describe the problem in detail..." />
       </div>
 
       <button type="submit" disabled={loading} className="w-full mt-4 bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 rounded-lg">

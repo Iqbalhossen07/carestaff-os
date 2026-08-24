@@ -40,6 +40,7 @@ export default function SettingsForm({ careHome }: { careHome: any }) {
             type="text" 
             name="name" 
             defaultValue={careHome.name} 
+            placeholder="e.g. Sunrise Care Home"
             required 
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900" 
           />
@@ -50,6 +51,7 @@ export default function SettingsForm({ careHome }: { careHome: any }) {
             type="text" 
             name="branchCode" 
             defaultValue={careHome.branchCode} 
+            placeholder="e.g. B-001"
             required 
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900" 
           />
@@ -61,6 +63,7 @@ export default function SettingsForm({ careHome }: { careHome: any }) {
         <textarea 
           name="address" 
           defaultValue={careHome.address || ""} 
+          placeholder="e.g. 123 High Street, London..."
           rows={3} 
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900" 
         />

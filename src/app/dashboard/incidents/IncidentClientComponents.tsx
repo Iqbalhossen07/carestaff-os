@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { reportIncident } from "./actions";
+import { RichTextEditor } from "@/components/RichTextEditor";
 
 export function ReportIncidentForm({ careHomeId, userId }: { careHomeId: string, userId: string }) {
   const [loading, setLoading] = useState(false);
@@ -36,7 +37,7 @@ export function ReportIncidentForm({ careHomeId, userId }: { careHomeId: string,
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Detailed Description</label>
-        <textarea name="description" required rows={5} placeholder="Describe what happened, who was involved, and what action was taken..." className="w-full px-4 py-2 border rounded-lg"></textarea>
+        <RichTextEditor name="description" placeholder="Describe what happened, who was involved, and what action was taken..." />
       </div>
 
       <button type="submit" disabled={loading} className="w-full mt-4 bg-red-600 hover:bg-red-700 text-white font-medium py-2 rounded-lg">

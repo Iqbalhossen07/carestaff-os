@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createEnquiry, updateEnquiryStatus } from "./actions";
+import { RichTextEditor } from "@/components/RichTextEditor";
 
 export function AddEnquiryForm({ careHomeId }: { careHomeId: string }) {
   const [loading, setLoading] = useState(false);
@@ -34,8 +35,8 @@ export function AddEnquiryForm({ careHomeId }: { careHomeId: string }) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-        <textarea name="notes" rows={3} className="w-full px-4 py-2 border rounded-lg"></textarea>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Initial Notes</label>
+        <RichTextEditor name="notes" placeholder="Enter any specific requirements or notes..." />
       </div>
 
       <button type="submit" disabled={loading} className="w-full mt-4 bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 rounded-lg">

@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Link from "next/link";
 import { Plus, User, Calendar, Hash } from "lucide-react";
+import { ActionButtons } from "@/components/ActionButtons";
 
 export default async function ResidentsPage() {
   const session = await getServerSession(authOptions);
@@ -87,10 +88,11 @@ export default async function ResidentsPage() {
                       {resident.nhsNumber || <span className="text-gray-400 italic">N/A</span>}
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-right">
-                    <button className="text-blue-600 hover:text-blue-800 font-medium text-sm">
-                      View Profile
-                    </button>
+                  <td className="px-6 py-4 flex justify-end">
+                    <ActionButtons 
+                      viewUrl={`/dashboard/residents/${resident.id}`}
+                      editUrl={`/dashboard/residents/${resident.id}/edit`}
+                    />
                   </td>
                 </tr>
               ))}

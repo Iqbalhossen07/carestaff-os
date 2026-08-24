@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { Users, Mail, ShieldCheck } from "lucide-react";
 import { AddStaffForm } from "./StaffClientComponents";
+import { ActionButtons } from "@/components/ActionButtons";
 
 export default async function StaffPage() {
   const session = await getServerSession(authOptions);
@@ -67,9 +68,10 @@ export default async function StaffPage() {
                   </div>
                   
                   <div>
-                    <button className="text-blue-600 hover:text-blue-800 text-sm font-medium border border-blue-200 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors">
-                      View Profile
-                    </button>
+                    <ActionButtons 
+                      viewUrl={`/dashboard/staff/${staff.id}`} 
+                      editUrl={`/dashboard/staff/${staff.id}/edit`}
+                    />
                   </div>
                 </div>
               ))}
