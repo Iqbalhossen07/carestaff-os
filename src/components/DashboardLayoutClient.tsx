@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import Sidebar from "./Sidebar";
-import { Menu, X } from "lucide-react";
+import { Menu, LayoutDashboard, Users, CalendarDays, Pill } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function DashboardLayoutClient({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
@@ -24,22 +27,47 @@ export default function DashboardLayoutClient({ children }: { children: React.Re
 
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Mobile header */}
-        <header className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-blue-600">CareStaff OS</h1>
-          <button 
-            onClick={() => setSidebarOpen(true)}
-            className="p-2 -mr-2 text-gray-600 hover:bg-gray-100 rounded-lg"
-          >
-            <Menu className="w-6 h-6" />
-          </button>
+        {/* Mobile top header (Minimal) */}
+        <header className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-center shadow-sm z-30 relative">
+          <h1 className="text-lg font-black text-blue-600">CareStaff OS</h1>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-8">
+        <main className="flex-1 overflow-y-auto p-4 pb-24 md:p-8 md:pb-8">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>
         </main>
+
+        {/* Mobile Bottom Navigation */}
+        <nav className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 lg:hidden flex justify-around items-center h-16 z-30 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+          <button 
+            onClick={() => setSidebarOpen(true)} 
+            className="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-blue-600 transition-colors"
+          >
+            <Menu className="w-5 h-5 mb-1" />
+            <span className="text-[10px] font-bold">Menu</span>
+          </button>
+          
+          <Link href="/dashboard" className={`flex flex-col items-center justify-center w-full h-full transition-colors ${pathname === '/dashboard' ? 'text-blue-600' : 'text-gray-500 hover:text-blue-600'}`}>
+            <LayoutDashboard className="w-5 h-5 mb-1" />
+            <span className="text-[10px] font-bold">Home</span>
+          </Link>
+
+          <Link href="/dashboard/residents" className={`flex flex-col items-center justify-center w-full h-full transition-colors ${pathname.startsWith('/dashboard/residents') ? 'text-blue-600' : 'text-gray-500 hover:text-blue-600'}`}>
+            <Users className="w-5 h-5 mb-1" />
+            <span className="text-[10px] font-bold">Residents</span>
+          </Link>
+
+          <Link href="/dashboard/rota" className={`flex flex-col items-center justify-center w-full h-full transition-colors ${pathname.startsWith('/dashboard/rota') ? 'text-blue-600' : 'text-gray-500 hover:text-blue-600'}`}>
+            <CalendarDays className="w-5 h-5 mb-1" />
+            <span className="text-[10px] font-bold">Rota</span>
+          </Link>
+
+          <Link href="/dashboard/emar" className={`flex flex-col items-center justify-center w-full h-full transition-colors ${pathname.startsWith('/dashboard/emar') ? 'text-blue-600' : 'text-gray-500 hover:text-blue-600'}`}>
+            <Pill className="w-5 h-5 mb-1" />
+            <span className="text-[10px] font-bold">eMAR</span>
+          </Link>
+        </nav>
       </div>
     </div>
   );
