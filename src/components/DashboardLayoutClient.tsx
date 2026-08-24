@@ -7,7 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 
-function Topbar() {
+function Topbar({ dbUser }: { dbUser?: any }) {
   const { data: session } = useSession();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -22,6 +22,11 @@ function Topbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const name = dbUser?.name || session?.user?.name;
+  const email = dbUser?.email || session?.user?.email;
+  const userType = dbUser?.userType || session?.user?.userType;
+  const image = dbUser?.image || session?.user?.image;
+
   return (
     <header className="hidden lg:flex items-center justify-end px-8 py-4 bg-white border-b border-gray-200 z-10">
       <div className="relative" ref={dropdownRef}>
@@ -30,12 +35,12 @@ function Topbar() {
           className="flex items-center gap-3 hover:bg-gray-50 px-3 py-2 rounded-lg transition-colors border border-transparent hover:border-gray-200"
         >
           <div className="text-right hidden md:block">
-            <p className="text-sm font-bold text-gray-900 leading-tight">{session?.user?.name}</p>
-            <p className="text-xs text-gray-500 font-medium">{session?.user?.userType === "SUPER_ADMIN" ? "Super Admin" : "Admin"}</p>
+            <p className="text-sm font-bold text-gray-900 leading-tight">{name}</p>
+            <p className="text-xs text-gray-500 font-medium">{userType === "SUPER_ADMIN" ? "Super Admin" : "Admin"}</p>
           </div>
           <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
-            {session?.user?.image ? (
-              <img src={session.user.image} alt="Profile" className="w-full h-full object-cover" />
+            {image ? (
+              <img src={image} alt="Profile" className="w-full h-full object-cover" />
             ) : (
               <User className="w-5 h-5 text-blue-600" />
             )}
@@ -46,8 +51,8 @@ function Topbar() {
         {dropdownOpen && (
           <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50 animate-in fade-in slide-in-from-top-2">
             <div className="px-4 py-2 border-b border-gray-100 mb-2">
-              <p className="text-sm font-bold text-gray-900">{session?.user?.name}</p>
-              <p className="text-xs text-gray-500 truncate">{session?.user?.email}</p>
+              <p className="text-sm font-bold text-gray-900">{name}</p>
+              <p className="text-xs text-gray-500 truncate">{email}</p>
             </div>
             <Link 
               href="/dashboard/profile"
@@ -77,7 +82,7 @@ function Topbar() {
   );
 }
 
-export default function DashboardLayoutClient({ children }: { children: React.ReactNode }) {
+export default function DashboardLayoutClient({ children, dbUser }: { children: React.ReactNode, dbUser?: any }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
 
@@ -99,7 +104,7 @@ export default function DashboardLayoutClient({ children }: { children: React.Re
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Desktop Topbar */}
-        <Topbar />
+        <Topbar dbUser={dbUser} />
 
         {/* Mobile top header (Minimal) */}
         <header className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-center shadow-sm z-30 relative gap-2">

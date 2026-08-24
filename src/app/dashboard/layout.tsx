@@ -2,6 +2,7 @@ import DashboardLayoutClient from "@/components/DashboardLayoutClient";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import prisma from "@/lib/prisma";
 
 export default async function DashboardLayout({
   children,
@@ -26,8 +27,13 @@ export default async function DashboardLayout({
     );
   }
 
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { name: true, email: true, image: true, userType: true }
+  });
+
   return (
-    <DashboardLayoutClient>
+    <DashboardLayoutClient dbUser={user}>
       {children}
     </DashboardLayoutClient>
   );
