@@ -20,6 +20,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
+            set -e
             cd htdocs/carestaff.iqbalhossen.xyz
             
             # Check if git is initialized
@@ -34,7 +35,7 @@ jobs:
               git pull origin main
             fi
             
-            npm install
+            npm install --legacy-peer-deps
             npx prisma generate
             npx prisma db push --accept-data-loss
             node --experimental-transform-types prisma/seed.ts || npx ts-node prisma/seed.ts || true
