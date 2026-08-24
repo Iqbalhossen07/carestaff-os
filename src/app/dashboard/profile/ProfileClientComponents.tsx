@@ -38,8 +38,8 @@ export function ProfileForm({ user }: { user: any }) {
     }
     
     try {
-      await updateProfile(user.id, formData);
-      await update({ name: formData.get("name"), image: preview }); // Update NextAuth session
+      const result = await updateProfile(user.id, formData);
+      await update({ name: formData.get("name"), image: result.imagePath || preview }); // Update NextAuth session with actual path
       setMessage("Profile updated successfully.");
     } catch (error: any) {
       setMessage(error.message || "Failed to update profile.");

@@ -4,10 +4,13 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import { revalidatePath } from "next/cache";
 
+import fs from "fs";
+import path from "path";
+
 export async function updateProfile(userId: string, formData: FormData) {
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
-  const image = formData.get("image") as string | null;
+  let image = formData.get("image") as string | null;
 
   if (!name || !email) {
     throw new Error("Name and Email are required");
@@ -20,8 +23,27 @@ export async function updateProfile(userId: string, formData: FormData) {
   }
 
   const dataToUpdate: any = { name, email };
-  if (image) {
-    dataToUpdate.image = image;
+  
+  if (image && image.startsWith("data:image/")) {
+    try {
+      const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
+      const extension = image.split(";")[0].split("/")[1] || "png";
+      const fileName = `profile-${userId}-${Date.now()}.${extension}`;
+      
+      const uploadDir = path.join(process.cwd(), "public", "uploads");
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      
+      const filePath = path.join(uploadDir, fileName);
+      fs.writeFileSync(filePath, Buffer.from(base64Data, 'base64'));
+      
+      // We return the path for client update
+      image = `/uploads/${fileName}`;
+      dataToUpdate.image = image;
+    } catch (e) {
+      console.error("Failed to save image", e);
+    }
   }
 
   await prisma.user.update({
@@ -30,6 +52,8 @@ export async function updateProfile(userId: string, formData: FormData) {
   });
 
   revalidatePath("/dashboard/profile");
+  
+  return { success: true, imagePath: image };
 }
 
 export async function changePassword(userId: string, formData: FormData) {

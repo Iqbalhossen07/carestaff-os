@@ -31,7 +31,7 @@ export default async function ProfilePage() {
         {/* Personal Details Form */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
           <h2 className="text-xl font-bold text-gray-900 mb-6">Personal Details</h2>
-          <ProfileForm user={user} />
+          <ProfileForm user={{ id: user.id, name: user.name, email: user.email, image: user.image }} />
         </div>
 
         {/* Password Reset Form */}
