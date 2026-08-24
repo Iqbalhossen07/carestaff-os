@@ -13,6 +13,8 @@ import {
   UtensilsCrossed,
   PhoneCall,
   Wrench,
+  UserCheck,
+  ShieldAlert,
   LogOut 
 } from "lucide-react";
 import { signOut } from "next-auth/react";
@@ -27,6 +29,8 @@ const navItems = [
   { name: "eMAR Overview", href: "/dashboard/emar", icon: Pill },
   { name: "Kitchen & Nutrition", href: "/dashboard/kitchen", icon: UtensilsCrossed },
   { name: "Maintenance", href: "/dashboard/maintenance", icon: Wrench },
+  { name: "Visitor Logs", href: "/dashboard/visitors", icon: UserCheck },
+  { name: "Safeguarding", href: "/dashboard/incidents", icon: ShieldAlert },
   { name: "Reports & Compliance", href: "/dashboard/reports", icon: FileText },
   { name: "Global Settings", href: "/dashboard/settings", icon: Settings },
 ];
