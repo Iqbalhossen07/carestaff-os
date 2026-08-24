@@ -43,9 +43,12 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
   return (
     <aside className="w-full lg:w-64 bg-gray-900 text-white min-h-screen flex flex-col h-full overflow-y-auto">
       <div className="p-6 flex justify-between items-center shrink-0">
-        <div>
-          <h2 className="text-2xl font-bold text-blue-400">CareStaff OS</h2>
-          <p className="text-gray-400 text-sm mt-1">Admin Panel</p>
+        <div className="flex items-center gap-3">
+          <img src="/logo.svg" alt="CareStaff OS Logo" className="w-8 h-8 rounded-lg shadow-sm" />
+          <div>
+            <h2 className="text-2xl font-black text-white tracking-tight">CareStaff OS</h2>
+            <p className="text-blue-400 text-xs font-bold uppercase tracking-wider mt-0.5">Admin Panel</p>
+          </div>
         </div>
         {onClose && (
           <button onClick={onClose} className="lg:hidden p-1 bg-gray-800 rounded text-gray-400 hover:text-white">

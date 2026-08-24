@@ -29,10 +29,13 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-100 p-8 relative z-10">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">CareStaff OS</h1>
-          <p className="text-gray-500">Log in to your account</p>
+          <div className="flex justify-center mb-4">
+            <img src="/logo.svg" alt="Logo" className="w-16 h-16 rounded-2xl shadow-md" />
+          </div>
+          <h1 className="text-3xl font-black text-gray-900 tracking-tight">CareStaff OS</h1>
+          <p className="text-gray-500 mt-2 font-medium">Sign in to your workspace</p>
         </div>
 
         {error && (

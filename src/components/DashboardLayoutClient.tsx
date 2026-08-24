@@ -28,8 +28,9 @@ export default function DashboardLayoutClient({ children }: { children: React.Re
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Mobile top header (Minimal) */}
-        <header className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-center shadow-sm z-30 relative">
-          <h1 className="text-lg font-black text-blue-600">CareStaff OS</h1>
+        <header className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-center shadow-sm z-30 relative gap-2">
+          <img src="/logo.svg" alt="CareStaff" className="w-6 h-6 rounded-md" />
+          <h1 className="text-lg font-black text-gray-900 tracking-tight">CareStaff OS</h1>
         </header>
 
         <main className="flex-1 overflow-y-auto p-4 pb-24 md:p-8 md:pb-8">
