@@ -21,9 +21,22 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
             cd htdocs/carestaff.iqbalhossen.xyz
-            git pull origin main
+            
+            # Check if git is initialized
+            if [ ! -d ".git" ]; then
+              rm -rf * # Clear default CloudPanel files
+              git init
+              git remote add origin https://github.com/Iqbalhossen07/carestaff-os.git
+              git fetch
+              git checkout -t origin/main -f
+            else
+              git reset --hard HEAD
+              git pull origin main
+            fi
+            
             npm install
             npx prisma generate
-            npx prisma db push
             npm run build
-            pm2 restart all || npm run start
+            
+            # Restart via pm2 if running, else start
+            pm2 restart carestaff-os || pm2 start npm --name "carestaff-os" -- run start -- --port 3110
