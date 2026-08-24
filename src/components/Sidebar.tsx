@@ -16,7 +16,8 @@ import {
   UserCheck,
   ShieldAlert,
   PoundSterling,
-  LogOut 
+  LogOut,
+  MessageSquare
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -28,6 +29,7 @@ const navItems = [
   { name: "Sales & Admissions", href: "/dashboard/crm", icon: PhoneCall },
   { name: "Rota & Shifts", href: "/dashboard/rota", icon: CalendarDays },
   { name: "eMAR Overview", href: "/dashboard/emar", icon: Pill },
+  { name: "Messages", href: "/dashboard/messages", icon: MessageSquare },
   { name: "Kitchen & Nutrition", href: "/dashboard/kitchen", icon: UtensilsCrossed },
   { name: "Maintenance", href: "/dashboard/maintenance", icon: Wrench },
   { name: "Visitor Logs", href: "/dashboard/visitors", icon: UserCheck },

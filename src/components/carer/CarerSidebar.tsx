@@ -10,7 +10,8 @@ import {
   MessageSquareDiff, 
   AlertOctagon, 
   Settings,
-  HeartPulse
+  HeartPulse,
+  MessageSquare
 } from "lucide-react";
 
 export default function CarerSidebar({ onClose }: { onClose?: () => void }) {
@@ -23,6 +24,7 @@ export default function CarerSidebar({ onClose }: { onClose?: () => void }) {
     { name: "eMAR Tasks", href: "/carer/emar", icon: Pill },
     { name: "Handovers", href: "/carer/handovers", icon: MessageSquareDiff },
     { name: "Report Incident", href: "/carer/incidents", icon: AlertOctagon },
+    { name: "Messages", href: "/carer/messages", icon: MessageSquare },
   ];
 
   return (

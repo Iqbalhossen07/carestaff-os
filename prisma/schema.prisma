@@ -69,6 +69,8 @@ model User {
   complianceDocs  ComplianceDocument[]
   givenMeds       EmarLog[]
   handovers       Handover[]
+  sentMessages    Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
 }
 
 enum UserType {
@@ -104,6 +106,7 @@ model Resident {
   emarLogs        EmarLog[]
   progressNotes   ProgressNote[]
   familyMembers   FamilyLink[]
+  invoices        Invoice[]
 }
 
 model Medication {
@@ -269,10 +272,28 @@ model Invoice {
   id          String   @id @default(uuid())
   careHomeId  String
   residentId  String
+  resident    Resident @relation(fields: [residentId], references: [id])
   amount      Float
   description String
   status      String   @default("UNPAID") // UNPAID, PAID, OVERDUE
   dueDate     DateTime
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+// ======================================================
+// 5. Messaging & Communication
+// ======================================================
+
+model Message {
+  id          String   @id @default(uuid())
+  content     String   @db.Text
+  timestamp   DateTime @default(now())
+  isRead      Boolean  @default(false)
+  
+  senderId    String
+  sender      User     @relation("SentMessages", fields: [senderId], references: [id])
+  
+  receiverId  String
+  receiver    User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
 }

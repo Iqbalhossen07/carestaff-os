@@ -4,9 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { 
   LayoutDashboard, 
-  HeartPulse, 
   Settings,
-  Heart
+  Heart,
+  FileText,
+  MessageSquare
 } from "lucide-react";
 
 export default function FamilySidebar({ onClose }: { onClose?: () => void }) {
@@ -14,6 +15,8 @@ export default function FamilySidebar({ onClose }: { onClose?: () => void }) {
 
   const navItems = [
     { name: "My Resident", href: "/family", icon: LayoutDashboard },
+    { name: "Billing & Invoices", href: "/family/billing", icon: FileText },
+    { name: "Messages", href: "/family/messages", icon: MessageSquare },
   ];
 
   return (
