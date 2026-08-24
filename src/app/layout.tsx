@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "CareStaff OS",
   description: "Next Generation Care Home Management System",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
