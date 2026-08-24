@@ -62,9 +62,45 @@ async function main() {
     }
   });
 
+  // Create a Dummy Resident
+  const resident = await prisma.resident.create({
+    data: {
+      firstName: 'John',
+      lastName: 'Smith',
+      nhsNumber: 'NHS-123456789',
+      dateOfBirth: new Date('1945-05-15'),
+      roomNumber: '101',
+      careHomeId: home.id,
+    }
+  });
+
+  // Create Family Member User
+  const familyUser = await prisma.user.upsert({
+    where: { email: 'family@sunrisecare.com' },
+    update: {},
+    create: {
+      name: 'Sarah Smith',
+      email: 'family@sunrisecare.com',
+      password: hashedPassword,
+      userType: 'CLIENT',
+      careHomeId: home.id,
+    }
+  });
+
+  // Link Family Member to Resident
+  await prisma.familyLink.create({
+    data: {
+      relation: 'Daughter',
+      canViewLogs: true,
+      familyMemberId: familyUser.id,
+      residentId: resident.id,
+    }
+  });
+
   console.log('Database seeded successfully!');
   console.log('Admin Login -> Email: admin@sunrisecare.com | Password: password123');
   console.log('Worker Login -> Email: jane@sunrisecare.com | Password: password123');
+  console.log('Family Login -> Email: family@sunrisecare.com | Password: password123');
 }
 
 main()
