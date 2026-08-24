@@ -1,6 +1,6 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -22,8 +22,16 @@ export default function LoginPage() {
 
     if (res?.error) {
       setError(res.error);
+      setLoading(false);
     } else {
-      router.push("/dashboard");
+      const session = await getSession();
+      if (session?.user?.userType === "WORKER") {
+        router.push("/carer");
+      } else if (session?.user?.userType === "CLIENT") {
+        router.push("/family");
+      } else {
+        router.push("/dashboard");
+      }
     }
   };
 
