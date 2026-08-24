@@ -10,6 +10,7 @@ import {
   Pill, 
   FileText,
   Settings,
+  UtensilsCrossed,
   LogOut 
 } from "lucide-react";
 import { signOut } from "next-auth/react";
@@ -21,7 +22,8 @@ const navItems = [
   { name: "Residents", href: "/dashboard/residents", icon: Users },
   { name: "Rota & Shifts", href: "/dashboard/rota", icon: CalendarDays },
   { name: "eMAR Overview", href: "/dashboard/emar", icon: Pill },
-  { name: "Reports", href: "/dashboard/reports", icon: FileText },
+  { name: "Kitchen & Nutrition", href: "/dashboard/kitchen", icon: UtensilsCrossed },
+  { name: "Reports & Compliance", href: "/dashboard/reports", icon: FileText },
   { name: "Global Settings", href: "/dashboard/settings", icon: Settings },
 ];
 

@@ -86,6 +86,8 @@ model Resident {
   nhsNumber       String?
   dateOfBirth     DateTime
   roomNumber      String?
+  dietaryReqs     String?    @db.Text
+  allergies       String?    @db.Text
   dietaryNeeds    String?
   
   careHomeId      String
