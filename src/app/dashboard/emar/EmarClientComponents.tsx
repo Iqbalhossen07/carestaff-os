@@ -24,8 +24,8 @@ export function AddMedicationForm({ residents }: { residents: any[] }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 space-y-4">
-      <h3 className="font-bold text-gray-900 mb-4">Add New Medication</h3>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <h3 className="font-bold text-gray-900 text-xl mb-6">Add New Medication</h3>
       
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Select Resident</label>
