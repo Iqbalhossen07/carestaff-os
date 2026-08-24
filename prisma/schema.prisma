@@ -7,9 +7,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ------------------------------------------------------
-// 1. Core Architecture (Panel A Roles & Multi-tenant setup)
-// ------------------------------------------------------
+// ======================================================
+// 1. Core Architecture (Panel A Roles & Multi-tenant)
+// ======================================================
 
 model CareHome {
   id          String   @id @default(uuid())
@@ -22,6 +22,7 @@ model CareHome {
   users       User[]
   roles       Role[]
   residents   Resident[]
+  shifts      Shift[]
 }
 
 model Role {
@@ -30,7 +31,7 @@ model Role {
   careHomeId  String
   careHome    CareHome @relation(fields: [careHomeId], references: [id])
   
-  // Granular Permission Flags
+  // Granular Permission Flags for Panel A
   canViewEmar       Boolean @default(false)
   canEditRota       Boolean @default(false)
   canViewFinance    Boolean @default(false)
@@ -57,20 +58,26 @@ model User {
   roleId      String?
   role        Role?    @relation(fields: [roleId], references: [id])
   
-  // Specific role flag (Admin, Worker, Client)
+  // Core application access
   userType    UserType @default(WORKER)
+
+  // Relations
+  shifts          Shift[]
+  complianceDocs  ComplianceDocument[]
+  givenMeds       EmarLog[]
+  handovers       Handover[]
 }
 
 enum UserType {
-  SUPER_ADMIN
-  ADMIN
-  WORKER
-  CLIENT
+  SUPER_ADMIN // Panel A Access
+  ADMIN       // Panel A Access
+  WORKER      // Panel B Access
+  CLIENT      // Panel C Access
 }
 
-// ------------------------------------------------------
-// 2. Resident & Medical Schema
-// ------------------------------------------------------
+// ======================================================
+// 2. Resident & Medical Schema (Care & eMAR)
+// ======================================================
 
 model Resident {
   id              String   @id @default(uuid())
@@ -86,6 +93,123 @@ model Resident {
   
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  // Relations
+  medications     Medication[]
+  emarLogs        EmarLog[]
+  progressNotes   ProgressNote[]
+  familyMembers   FamilyLink[]
 }
 
-// Note: eMAR, Shifts, Handover, Billing schemas will be added in the next step.
+model Medication {
+  id          String   @id @default(uuid())
+  name        String
+  dosage      String
+  frequency   String   // e.g., "Morning", "Evening", "As needed"
+  instructions String?
+  
+  residentId  String
+  resident    Resident @relation(fields: [residentId], references: [id])
+  
+  logs        EmarLog[]
+}
+
+model EmarLog {
+  id            String   @id @default(uuid())
+  status        EmarStatus // Administered or Refused
+  refusalReason String?    // Mandatory if Refused
+  timestamp     DateTime @default(now())
+  
+  medicationId  String
+  medication    Medication @relation(fields: [medicationId], references: [id])
+  
+  residentId    String
+  resident      Resident   @relation(fields: [residentId], references: [id])
+  
+  administeredById String
+  administeredBy   User     @relation(fields: [administeredById], references: [id])
+}
+
+enum EmarStatus {
+  ADMINISTERED
+  REFUSED
+  MISSED
+}
+
+model ProgressNote {
+  id          String   @id @default(uuid())
+  note        String   @db.Text
+  mood        String?
+  foodIntake  String?
+  timestamp   DateTime @default(now())
+  
+  residentId  String
+  resident    Resident @relation(fields: [residentId], references: [id])
+}
+
+// ======================================================
+// 3. Workforce & Rota Schema
+// ======================================================
+
+model Shift {
+  id          String   @id @default(uuid())
+  title       String
+  startTime   DateTime
+  endTime     DateTime
+  isOpen      Boolean  @default(false) // Broadcasted open shift
+  status      ShiftStatus @default(SCHEDULED)
+  
+  careHomeId  String
+  careHome    CareHome @relation(fields: [careHomeId], references: [id])
+
+  assignedToId String?
+  assignedTo   User?   @relation(fields: [assignedToId], references: [id])
+}
+
+enum ShiftStatus {
+  SCHEDULED
+  COMPLETED
+  ABSENT
+}
+
+model ComplianceDocument {
+  id          String   @id @default(uuid())
+  type        DocType
+  documentUrl String
+  expiryDate  DateTime
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+enum DocType {
+  PASSPORT
+  VISA
+  DBS
+  TRAINING_CERT
+}
+
+model Handover {
+  id          String   @id @default(uuid())
+  notes       String   @db.Text
+  timestamp   DateTime @default(now())
+  
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
+}
+
+// ======================================================
+// 4. Family / Client Schema
+// ======================================================
+
+model FamilyLink {
+  id          String   @id @default(uuid())
+  relation    String   // e.g., "Son", "Daughter"
+  canViewLogs Boolean  @default(false)
+  
+  familyMemberId String
+  // The family member will be an entry in the User table with UserType=CLIENT
+  
+  residentId  String
+  resident    Resident @relation(fields: [residentId], references: [id])
+}
