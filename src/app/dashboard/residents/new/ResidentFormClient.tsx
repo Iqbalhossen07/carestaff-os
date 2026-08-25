@@ -2,17 +2,25 @@
 
 import { useState } from "react";
 import { createResident } from "../actions";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Swal from "sweetalert2";
 import { Upload, X } from "lucide-react";
-import Image from "next/image";
 
 export default function ResidentFormClient({ careHomeId }: { careHomeId: string }) {
   const [loading, setLoading] = useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Extract Enquiry params for pre-filling
+  const initialFirstName = searchParams.get("firstName") || "";
+  const initialLastName = searchParams.get("lastName") || "";
+  const initialContactName = searchParams.get("contactName") || "";
+  const initialPhone = searchParams.get("phone") || "";
+  const initialNotes = searchParams.get("notes") || "";
+  const enquiryId = searchParams.get("enquiryId"); // You can optionally delete or update this enquiry after success
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -74,6 +82,10 @@ export default function ResidentFormClient({ careHomeId }: { careHomeId: string 
       if (res.error) {
         throw new Error(res.error);
       }
+
+      // If admitted from CRM, optionally you can mark that Enquiry as Admitted in the DB here!
+      // But we will just let it be manual for now, or the user can do it. Let's just create the Resident.
+
       Swal.fire('Success', 'Resident added successfully', 'success');
       router.push("/dashboard/residents");
       router.refresh();
@@ -86,6 +98,12 @@ export default function ResidentFormClient({ careHomeId }: { careHomeId: string 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       
+      {enquiryId && (
+        <div className="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-lg mb-6 text-sm flex items-center">
+          <strong>Admitting from Enquiry:</strong>&nbsp; Fields have been auto-filled. Please complete the rest.
+        </div>
+      )}
+
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-2">Resident Photo (Optional)</label>
         <div className="flex items-center gap-6">
@@ -126,6 +144,7 @@ export default function ResidentFormClient({ careHomeId }: { careHomeId: string 
           <input
             type="text"
             name="firstName"
+            defaultValue={initialFirstName}
             placeholder="e.g. John"
             required
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
@@ -136,6 +155,7 @@ export default function ResidentFormClient({ careHomeId }: { careHomeId: string 
           <input
             type="text"
             name="lastName"
+            defaultValue={initialLastName}
             placeholder="e.g. Doe"
             required
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
@@ -200,6 +220,7 @@ export default function ResidentFormClient({ careHomeId }: { careHomeId: string 
         <textarea
           name="medicalHistory"
           rows={3}
+          defaultValue={initialNotes}
           placeholder="Provide a brief summary of medical history and care instructions..."
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900 resize-none"
         ></textarea>
@@ -213,6 +234,7 @@ export default function ResidentFormClient({ careHomeId }: { careHomeId: string 
             <input
               type="text"
               name="emergencyContactName"
+              defaultValue={initialContactName}
               placeholder="e.g. Jane Doe (Daughter)"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
             />
@@ -222,6 +244,7 @@ export default function ResidentFormClient({ careHomeId }: { careHomeId: string 
             <input
               type="text"
               name="emergencyContactPhone"
+              defaultValue={initialPhone}
               placeholder="e.g. +44 7700 900000"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
             />

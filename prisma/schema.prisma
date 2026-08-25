@@ -244,15 +244,22 @@ model FamilyLink {
 }
 
 model Enquiry {
-  id          String   @id @default(uuid())
-  careHomeId  String
-  careHome    CareHome @relation(fields: [careHomeId], references: [id])
-  name        String
-  contactInfo String
-  status      String   @default("NEW") // NEW, CONTACTED, ADMITTED, LOST
-  notes       String?  @db.Text
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                    String   @id @default(uuid())
+  careHomeId            String
+  careHome              CareHome @relation(fields: [careHomeId], references: [id])
+  
+  firstName             String
+  lastName              String
+  contactName           String?
+  contactPhone          String?
+  contactEmail          String?
+  careRequired          String?
+  
+  status                String   @default("New") // New, In Progress, Admitted, Lost
+  notes                 String?  @db.Text
+  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
 
 model MaintenanceTicket {
