@@ -17,6 +17,10 @@ function extractPermissions(formData: FormData) {
     canManageVisitors: formData.get("canManageVisitors") === "on",
     canManageSafeguarding: formData.get("canManageSafeguarding") === "on",
     canManageReports: formData.get("canManageReports") === "on",
+    canViewDashboard: formData.get("canViewDashboard") === "on",
+    canManageRoles: formData.get("canManageRoles") === "on",
+    canManageProfile: formData.get("canManageProfile") === "on",
+    canManageSettings: formData.get("canManageSettings") === "on",
     isSuperAdmin: formData.get("isSuperAdmin") === "on",
   };
 }

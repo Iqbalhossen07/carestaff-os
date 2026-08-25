@@ -49,6 +49,12 @@ model Role {
   canManageSafeguarding Boolean @default(false)
   canManageReports      Boolean @default(false)
 
+  // Newly added to cover all 16 menus
+  canViewDashboard      Boolean @default(true)
+  canManageRoles        Boolean @default(false)
+  canManageProfile      Boolean @default(true)
+  canManageSettings     Boolean @default(false)
+
   isSuperAdmin          Boolean @default(false)
 
   users       User[]

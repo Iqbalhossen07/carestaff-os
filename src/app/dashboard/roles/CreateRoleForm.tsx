@@ -35,18 +35,22 @@ export default function CreateRoleForm({ careHomeId, initialData }: { careHomeId
   };
 
   const perms = [
-    { name: "canViewResidents", label: "View Residents & Profiles" },
-    { name: "canViewEmar", label: "Manage eMAR (Medications)" },
-    { name: "canEditRota", label: "Manage Staff Rota & Shifts" },
+    { name: "canViewDashboard", label: "View Dashboard" },
+    { name: "canManageRoles", label: "Manage Roles & Permissions" },
     { name: "canManageStaff", label: "Manage Staff Directory & HR" },
+    { name: "canViewResidents", label: "View Residents & Profiles" },
+    { name: "canManageCRM", label: "Manage Sales & Admissions" },
+    { name: "canEditRota", label: "Manage Staff Rota & Shifts" },
+    { name: "canViewEmar", label: "Manage eMAR Overview" },
     { name: "canManageMessages", label: "Access Live Messages" },
-    { name: "canManageKitchen", label: "Manage Kitchen & Dietary" },
+    { name: "canManageKitchen", label: "Manage Kitchen & Nutrition" },
     { name: "canManageMaintenance", label: "Manage Maintenance" },
     { name: "canManageVisitors", label: "Manage Visitor Logs" },
-    { name: "canManageSafeguarding", label: "Manage Safeguarding & Incidents" },
+    { name: "canManageSafeguarding", label: "Manage Safeguarding" },
     { name: "canViewFinance", label: "Manage Finance & Billing" },
-    { name: "canManageCRM", label: "Manage Sales & CRM" },
-    { name: "canManageReports", label: "View Analytics & Reports" },
+    { name: "canManageReports", label: "View Reports & Compliance" },
+    { name: "canManageProfile", label: "Manage My Profile" },
+    { name: "canManageSettings", label: "Manage Global Settings" },
   ];
 
   return (

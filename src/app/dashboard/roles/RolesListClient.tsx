@@ -47,18 +47,22 @@ export default function RolesListClient({ roles }: { roles: any[] }) {
           {!role.isSuperAdmin && (
             <div className="bg-gray-50 p-6 border-t border-gray-100">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-y-4 gap-x-2">
+                <PermItem label="Dashboard" hasPermission={role.canViewDashboard} />
+                <PermItem label="Roles" hasPermission={role.canManageRoles} />
+                <PermItem label="Staff" hasPermission={role.canManageStaff} />
                 <PermItem label="Residents" hasPermission={role.canViewResidents} />
-                <PermItem label="eMAR" hasPermission={role.canViewEmar} />
+                <PermItem label="CRM" hasPermission={role.canManageCRM} />
                 <PermItem label="Rota" hasPermission={role.canEditRota} />
-                <PermItem label="Staff & HR" hasPermission={role.canManageStaff} />
+                <PermItem label="eMAR" hasPermission={role.canViewEmar} />
                 <PermItem label="Messages" hasPermission={role.canManageMessages} />
                 <PermItem label="Kitchen" hasPermission={role.canManageKitchen} />
                 <PermItem label="Maintenance" hasPermission={role.canManageMaintenance} />
                 <PermItem label="Visitors" hasPermission={role.canManageVisitors} />
                 <PermItem label="Safeguarding" hasPermission={role.canManageSafeguarding} />
                 <PermItem label="Finance" hasPermission={role.canViewFinance} />
-                <PermItem label="CRM" hasPermission={role.canManageCRM} />
                 <PermItem label="Reports" hasPermission={role.canManageReports} />
+                <PermItem label="Profile" hasPermission={role.canManageProfile} />
+                <PermItem label="Settings" hasPermission={role.canManageSettings} />
               </div>
             </div>
           )}
