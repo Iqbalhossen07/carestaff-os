@@ -1,8 +1,9 @@
 "use client";
 
-import { Check, X, Edit, Trash2 } from "lucide-react";
+import { Check, X } from "lucide-react";
 import Link from "next/link";
 import { deleteRole } from "./actions";
+import { ActionMenu } from "@/components/ui/ActionButtons";
 
 export default function RolesListClient({ roles }: { roles: any[] }) {
 
@@ -35,20 +36,11 @@ export default function RolesListClient({ roles }: { roles: any[] }) {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <Link 
-                href={`/dashboard/roles/${role.id}`}
-                className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                title="Edit Role"
-              >
-                <Edit className="w-5 h-5" />
-              </Link>
-              <button 
-                onClick={() => handleDelete(role.id, role.name)}
-                className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                title="Delete Role"
-              >
-                <Trash2 className="w-5 h-5" />
-              </button>
+              <ActionMenu 
+                editHref={`/dashboard/roles/${role.id}`} 
+                onDelete={() => handleDelete(role.id, role.name)} 
+                itemName="role" 
+              />
             </div>
           </div>
           
