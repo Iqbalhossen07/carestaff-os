@@ -2,13 +2,17 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Plus, User, Calendar, Hash, Home, Search, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Plus, User, Hash, Home, Search, Trash2, CalendarHeart } from "lucide-react";
 import { deleteResident } from "./actions";
+import { ActionMenu } from "@/components/ui/ActionButtons";
+import Swal from "sweetalert2";
 
 export default function ResidentListClient({ initialResidents }: { initialResidents: any[] }) {
   const [search, setSearch] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [deleting, setDeleting] = useState(false);
+  const router = useRouter();
 
   const filteredResidents = initialResidents.filter(r => {
     const term = search.toLowerCase();
@@ -26,39 +30,66 @@ export default function ResidentListClient({ initialResidents }: { initialReside
   };
 
   const toggleAll = () => {
-    if (selectedIds.size === filteredResidents.length) {
+    if (selectedIds.size === filteredResidents.length && filteredResidents.length > 0) {
       setSelectedIds(new Set());
     } else {
       setSelectedIds(new Set(filteredResidents.map(r => r.id)));
     }
   };
 
-  const handleBulkDelete = async () => {
-    if (!confirm(`Are you sure you want to delete ${selectedIds.size} residents?`)) return;
-    setDeleting(true);
+  const handleSingleDelete = async (id: string) => {
     try {
-      // In a real app, you'd have a bulk delete action. 
-      // For now, we loop the single delete action.
-      for (const id of Array.from(selectedIds)) {
-        await deleteResident(id);
-      }
-      setSelectedIds(new Set());
-      // The page will revalidate and update automatically because deleteResident calls revalidatePath
+      await deleteResident(id);
+      Swal.fire('Deleted!', 'Resident has been removed.', 'success');
+      setSelectedIds(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
+      router.refresh(); // Refresh Next.js server data
     } catch (e) {
-      alert("Error deleting some residents");
+      Swal.fire('Error', 'Failed to delete resident.', 'error');
     }
-    setDeleting(false);
+  };
+
+  const handleBulkDelete = async () => {
+    const result = await Swal.fire({
+      title: `Delete ${selectedIds.size} residents?`,
+      text: "You won't be able to revert this bulk action!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete all!'
+    });
+
+    if (result.isConfirmed) {
+      setDeleting(true);
+      try {
+        for (const id of Array.from(selectedIds)) {
+          await deleteResident(id);
+        }
+        Swal.fire('Deleted!', `${selectedIds.size} residents have been deleted.`, 'success');
+        setSelectedIds(new Set());
+        router.refresh();
+      } catch (e) {
+        Swal.fire('Error', 'Error deleting some residents', 'error');
+      }
+      setDeleting(false);
+    }
   };
 
   if (initialResidents.length === 0) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-        <User className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-        <h2 className="text-xl font-bold text-gray-900 mb-2">No residents found</h2>
-        <p className="text-gray-500 mb-6">Get started by adding your first resident to the system.</p>
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-16 text-center">
+        <div className="w-20 h-20 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-6">
+          <User className="w-10 h-10" />
+        </div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">No residents found</h2>
+        <p className="text-gray-500 mb-8 max-w-md mx-auto">Get started by adding your first resident to the system to start managing their care profiles.</p>
         <Link 
           href="/dashboard/residents/new"
-          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-medium transition-colors"
+          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-colors shadow-sm"
         >
           <Plus className="w-5 h-5" /> Add Resident
         </Link>
@@ -68,91 +99,130 @@ export default function ResidentListClient({ initialResidents }: { initialReside
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row gap-4 justify-between">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+        <div className="relative w-full sm:w-96">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input 
             type="text"
-            placeholder="Search by name, room, or NHS number..."
+            placeholder="Search by name, room, or NHS..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
+            className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none text-gray-900 transition-all placeholder:text-gray-400"
           />
         </div>
         
-        {selectedIds.size > 0 && (
-          <button 
-            onClick={handleBulkDelete}
-            disabled={deleting}
-            className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg font-medium transition-colors border border-red-200"
-          >
-            <Trash2 className="w-4 h-4" />
-            {deleting ? "Deleting..." : `Delete Selected (${selectedIds.size})`}
-          </button>
-        )}
-      </div>
+        <div className="flex items-center gap-4 w-full sm:w-auto">
+          <label className="flex items-center gap-2 text-sm font-medium text-gray-600 cursor-pointer hover:text-gray-900">
+            <input 
+              type="checkbox" 
+              checked={selectedIds.size > 0 && selectedIds.size === filteredResidents.length}
+              onChange={toggleAll}
+              className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer transition-all"
+            />
+            Select All
+          </label>
 
-      <div className="flex items-center gap-2 mb-2 text-sm text-gray-500">
-        <input 
-          type="checkbox" 
-          checked={selectedIds.size > 0 && selectedIds.size === filteredResidents.length}
-          onChange={toggleAll}
-          className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-        />
-        <span>Select All</span>
+          {selectedIds.size > 0 && (
+            <button 
+              onClick={handleBulkDelete}
+              disabled={deleting}
+              className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-xl font-bold transition-all border border-red-100 shadow-sm"
+            >
+              <Trash2 className="w-4 h-4" />
+              {deleting ? "Deleting..." : `Delete (${selectedIds.size})`}
+            </button>
+          )}
+        </div>
       </div>
 
       {filteredResidents.length === 0 ? (
-        <div className="text-center py-12 text-gray-500 bg-white rounded-xl border border-gray-200">
+        <div className="text-center py-16 text-gray-500 bg-white rounded-2xl border border-gray-100 shadow-sm">
           No residents match your search.
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredResidents.map((resident) => {
             const isSelected = selectedIds.has(resident.id);
             return (
               <div 
                 key={resident.id} 
-                className={`bg-white rounded-xl border-2 transition-all overflow-hidden ${
-                  isSelected ? "border-blue-500 shadow-md" : "border-gray-100 hover:border-gray-200 shadow-sm hover:shadow"
+                className={`relative group bg-white rounded-2xl border transition-all duration-200 overflow-hidden ${
+                  isSelected 
+                    ? "border-blue-500 ring-4 ring-blue-50 shadow-md transform -translate-y-1" 
+                    : "border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-gray-200"
                 }`}
               >
-                <div className="p-5">
-                  <div className="flex justify-between items-start mb-4">
+                {/* Premium Banner */}
+                <div className="h-24 bg-gradient-to-r from-slate-800 to-slate-700 w-full relative">
+                  <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+                  
+                  {/* Action Menu (Top Right) */}
+                  <div className="absolute top-3 right-3 z-10 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-lg">
+                    <ActionMenu 
+                      itemName="resident"
+                      viewHref={`/dashboard/residents/${resident.id}`}
+                      editHref={`/dashboard/residents/${resident.id}/edit`}
+                      onDelete={() => handleSingleDelete(resident.id)}
+                    />
+                  </div>
+
+                  {/* Selection Checkbox (Top Left) */}
+                  <div className="absolute top-4 left-4 z-10">
                     <input 
                       type="checkbox"
                       checked={isSelected}
                       onChange={() => toggleSelect(resident.id)}
-                      className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                      className="w-5 h-5 rounded shadow-sm border-white text-blue-600 focus:ring-white cursor-pointer bg-white/80 backdrop-blur-sm"
                     />
-                    <div className="flex gap-2">
-                      <Link href={`/dashboard/residents/${resident.id}/edit`} className="text-xs font-medium text-gray-500 hover:text-blue-600 px-2 py-1 bg-gray-50 rounded hover:bg-blue-50">Edit</Link>
-                      <Link href={`/dashboard/residents/${resident.id}`} className="text-xs font-medium text-gray-500 hover:text-blue-600 px-2 py-1 bg-gray-50 rounded hover:bg-blue-50">View</Link>
-                    </div>
                   </div>
+                </div>
 
-                  <div className="flex items-center gap-4 mb-5">
-                    <div className="w-14 h-14 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl">
+                <div className="px-6 pb-6 relative">
+                  {/* Avatar overlapping banner */}
+                  <div className="w-20 h-20 rounded-2xl bg-white p-1.5 shadow-lg absolute -top-10 left-6">
+                    <div className="w-full h-full rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-black text-2xl">
                       {resident.firstName[0]}{resident.lastName[0]}
                     </div>
-                    <div>
-                      <h3 className="font-bold text-lg text-gray-900">{resident.firstName} {resident.lastName}</h3>
-                      <p className="text-sm text-gray-500">
-                        {calculateAge(resident.dateOfBirth)} years old
-                      </p>
-                    </div>
                   </div>
 
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-3 text-gray-600 bg-gray-50 p-2 rounded-lg">
-                      <Home className="w-4 h-4 text-gray-400" />
-                      <span className="font-medium">{resident.roomNumber ? `Room ${resident.roomNumber}` : "Unassigned Room"}</span>
+                  {/* Spacer for avatar */}
+                  <div className="h-14"></div>
+
+                  <div className="mb-4">
+                    <h3 className="font-black text-xl text-gray-900 group-hover:text-blue-600 transition-colors">
+                      {resident.firstName} {resident.lastName}
+                    </h3>
+                    <p className="text-sm font-medium text-blue-600 mt-0.5">
+                      {calculateAge(resident.dateOfBirth)} Years Old
+                    </p>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    <div className="flex items-center gap-3 text-sm p-2.5 bg-gray-50 rounded-xl border border-gray-100">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                        <Home className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-500 font-medium">Room Number</p>
+                        <p className="font-bold text-gray-900 truncate">
+                          {resident.roomNumber || "Unassigned"}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-3 text-gray-600 bg-gray-50 p-2 rounded-lg">
-                      <Hash className="w-4 h-4 text-gray-400" />
-                      <span>NHS: <span className="font-medium">{resident.nhsNumber || "N/A"}</span></span>
+
+                    <div className="flex items-center gap-3 text-sm p-2.5 bg-gray-50 rounded-xl border border-gray-100">
+                      <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                        <Hash className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-500 font-medium">NHS Number</p>
+                        <p className="font-bold text-gray-900 truncate">
+                          {resident.nhsNumber || "Not Provided"}
+                        </p>
+                      </div>
                     </div>
                   </div>
+                  
                 </div>
               </div>
             );

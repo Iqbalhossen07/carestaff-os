@@ -3,6 +3,7 @@
 import { Edit, Trash2, MoreVertical, Eye } from "lucide-react";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
+import Swal from "sweetalert2";
 
 interface ActionButtonsProps {
   onEdit?: () => void;
@@ -27,11 +28,21 @@ export function ActionMenu({ onEdit, editHref, onDelete, onView, viewHref, itemN
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     setIsOpen(false);
     if (onDelete) {
-      if (confirm(`Are you sure you want to delete this ${itemName}?`)) {
-        onDelete();
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: `You won't be able to revert this ${itemName}!`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+      });
+      
+      if (result.isConfirmed) {
+        onDelete(); // The caller should handle await/router.refresh() if needed
       }
     }
   };
@@ -78,48 +89,6 @@ export function ActionMenu({ onEdit, editHref, onDelete, onView, viewHref, itemN
             </button>
           )}
         </div>
-      )}
-    </div>
-  );
-}
-
-export function InlineActionButtons({ onEdit, editHref, onDelete, onView, viewHref, itemName = "item" }: ActionButtonsProps) {
-  const handleDelete = () => {
-    if (onDelete) {
-      if (confirm(`Are you sure you want to delete this ${itemName}?`)) {
-        onDelete();
-      }
-    }
-  };
-
-  return (
-    <div className="flex items-center gap-2">
-      {(onView || viewHref) && (
-        viewHref ? (
-          <Link href={viewHref} className="p-2 text-gray-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors" title="View">
-            <Eye className="w-5 h-5" />
-          </Link>
-        ) : (
-          <button onClick={onView} className="p-2 text-gray-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors" title="View">
-            <Eye className="w-5 h-5" />
-          </button>
-        )
-      )}
-      {(onEdit || editHref) && (
-        editHref ? (
-          <Link href={editHref} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
-            <Edit className="w-5 h-5" />
-          </Link>
-        ) : (
-          <button onClick={onEdit} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
-            <Edit className="w-5 h-5" />
-          </button>
-        )
-      )}
-      {onDelete && (
-        <button onClick={handleDelete} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
-          <Trash2 className="w-5 h-5" />
-        </button>
       )}
     </div>
   );
