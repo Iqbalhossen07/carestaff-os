@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { Pill, Plus, Clock, Search, User } from "lucide-react";
-import { getServerSession } from "next/auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { EmarDateSelector } from "./EmarDateSelector";
 import { LogMedicationButton } from "./EmarClientComponents";
