@@ -15,6 +15,12 @@ export default async function AddShiftPage() {
     orderBy: { name: 'asc' }
   });
 
+  const roles = await prisma.role.findMany({
+    where: { careHomeId },
+    select: { id: true, name: true },
+    orderBy: { name: 'asc' }
+  });
+
   return (
     <div className="max-w-2xl mx-auto">
       <Link href="/dashboard/rota" className="text-gray-500 hover:text-gray-800 flex items-center gap-2 mb-6 w-fit text-sm font-medium">
@@ -23,7 +29,7 @@ export default async function AddShiftPage() {
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">Create New Shift</h1>
-        <NewShiftFormClient careHomeId={careHomeId} staffMembers={staffMembers} />
+        <NewShiftFormClient careHomeId={careHomeId} staffMembers={staffMembers} roles={roles} />
       </div>
     </div>
   );

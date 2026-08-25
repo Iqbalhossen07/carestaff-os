@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Swal from "sweetalert2";
 
-export default function EditShiftFormClient({ shift, staffMembers }: { shift: any, staffMembers: any[] }) {
+export default function EditShiftFormClient({ shift, staffMembers, roles }: { shift: any, staffMembers: any[], roles: any[] }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -47,12 +47,9 @@ export default function EditShiftFormClient({ shift, staffMembers }: { shift: an
         <label className="block text-sm font-medium text-gray-700 mb-1">Required Role *</label>
         <select name="title" defaultValue={shift.title} required className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
           <option value="">Select Role...</option>
-          <option value="Senior Nurse">Senior Nurse</option>
-          <option value="Care Assistant">Care Assistant</option>
-          <option value="Support Worker">Support Worker</option>
-          <option value="Cleaner">Cleaner</option>
-          <option value="Kitchen Staff">Kitchen Staff</option>
-          <option value="Activity Coordinator">Activity Coordinator</option>
+          {roles.map(r => (
+            <option key={r.id} value={r.name}>{r.name}</option>
+          ))}
         </select>
       </div>
 
