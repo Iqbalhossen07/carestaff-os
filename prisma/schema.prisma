@@ -187,6 +187,7 @@ model Shift {
   endTime     DateTime
   isOpen      Boolean  @default(false) // Broadcasted open shift
   status      ShiftStatus @default(SCHEDULED)
+  notes       String?  @db.Text
   
   careHomeId  String
   careHome    CareHome @relation(fields: [careHomeId], references: [id])
