@@ -85,6 +85,20 @@ export default async function CarerResidentDetailPage({ params }: { params: Prom
                 <p className="text-xs text-gray-500 font-medium">Dietary Requirements</p>
                 <p className="text-sm font-bold text-gray-900">{resident.dietaryReqs || resident.dietaryNeeds || "Standard Diet"}</p>
               </div>
+              <div>
+                <p className="text-xs text-gray-500 font-medium">Medical History & Care Plan</p>
+                <p className="text-sm text-gray-700 bg-gray-50 p-2 rounded border border-gray-100 whitespace-pre-wrap">{resident.medicalHistory || "None provided"}</p>
+              </div>
+            </div>
+            
+            <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2 mt-6 pt-4 border-t border-gray-100">
+              <User className="w-4 h-4" /> Emergency Contact
+            </h3>
+            <div className="space-y-2">
+              <p className="text-sm font-bold text-gray-900">{resident.emergencyContactName || "Not provided"}</p>
+              {resident.emergencyContactPhone && (
+                <p className="text-sm text-blue-600 font-medium">{resident.emergencyContactPhone}</p>
+              )}
             </div>
           </div>
         </div>
