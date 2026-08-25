@@ -45,9 +45,7 @@ export default function CrmEditClient({ enquiry }: { enquiry: any }) {
         <h3 className="text-lg font-bold text-gray-900">Prospective Resident Details</h3>
         <select name="status" defaultValue={enquiry.status} className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-bold bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none">
           <option value="New">New</option>
-          <option value="In Progress">In Progress</option>
           <option value="Visit">Visit</option>
-          <option value="Admitted">Admitted</option>
           <option value="Lost">Lost</option>
         </select>
       </div>

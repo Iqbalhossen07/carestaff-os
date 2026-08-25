@@ -114,34 +114,34 @@ export function InlineActionButtons({ onEdit, editHref, onDelete, onView, viewHr
   };
 
   return (
-    <div className="flex justify-end gap-1 relative z-10">
+    <div className="flex justify-end gap-2 relative z-10">
       {(onView || viewHref) && (
         viewHref ? (
-          <Link href={viewHref} className="p-2 text-gray-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors" title="View Details">
-            <Eye className="w-5 h-5" />
+          <Link href={viewHref} className="p-2 bg-teal-50 border border-teal-100 text-teal-600 hover:bg-teal-100 rounded-lg transition-colors shadow-sm" title="View Details">
+            <Eye className="w-4 h-4" />
           </Link>
         ) : (
-          <button onClick={onView} className="p-2 text-gray-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors" title="View Details">
-            <Eye className="w-5 h-5" />
+          <button onClick={onView} className="p-2 bg-teal-50 border border-teal-100 text-teal-600 hover:bg-teal-100 rounded-lg transition-colors shadow-sm" title="View Details">
+            <Eye className="w-4 h-4" />
           </button>
         )
       )}
 
       {(onEdit || editHref) && (
         editHref ? (
-          <Link href={editHref} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
-            <Edit className="w-5 h-5" />
+          <Link href={editHref} className="p-2 bg-blue-50 border border-blue-100 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors shadow-sm" title="Edit">
+            <Edit className="w-4 h-4" />
           </Link>
         ) : (
-          <button onClick={onEdit} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
-            <Edit className="w-5 h-5" />
+          <button onClick={onEdit} className="p-2 bg-blue-50 border border-blue-100 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors shadow-sm" title="Edit">
+            <Edit className="w-4 h-4" />
           </button>
         )
       )}
 
       {onDelete && (
-        <button onClick={handleDelete} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
-          <Trash2 className="w-5 h-5" />
+        <button onClick={handleDelete} className="p-2 bg-red-50 border border-red-100 text-red-600 hover:bg-red-100 rounded-lg transition-colors shadow-sm" title="Delete">
+          <Trash2 className="w-4 h-4" />
         </button>
       )}
     </div>

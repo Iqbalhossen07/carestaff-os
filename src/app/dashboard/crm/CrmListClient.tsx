@@ -13,7 +13,7 @@ export default function CrmListClient({ initialEnquiries }: { initialEnquiries: 
   const [filterStatus, setFilterStatus] = useState("All");
   const router = useRouter();
 
-  const statuses = ["New", "In Progress", "Visit", "Admitted", "Lost"];
+  const statuses = ["New", "Visit", "Lost"];
 
   const filteredEnquiries = initialEnquiries.filter(e => {
     const term = search.toLowerCase();
@@ -87,9 +87,7 @@ export default function CrmListClient({ initialEnquiries }: { initialEnquiries: 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'New': return 'bg-blue-100 text-blue-700 border-blue-200';
-      case 'In Progress': return 'bg-orange-100 text-orange-700 border-orange-200';
       case 'Visit': return 'bg-purple-100 text-purple-700 border-purple-200';
-      case 'Admitted': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
       case 'Lost': return 'bg-red-100 text-red-700 border-red-200';
       default: return 'bg-gray-100 text-gray-700 border-gray-200';
     }
@@ -223,7 +221,7 @@ export default function CrmListClient({ initialEnquiries }: { initialEnquiries: 
                 </div>
 
                 {/* Admit Action */}
-                {enquiry.status !== "Admitted" && enquiry.status !== "Lost" && (
+                {enquiry.status !== "Lost" && (
                   <div className="mt-4 flex justify-center">
                     <Link 
                       href={`/dashboard/residents/new?enquiryId=${enquiry.id}&firstName=${encodeURIComponent(enquiry.firstName)}&lastName=${encodeURIComponent(enquiry.lastName)}&contactName=${encodeURIComponent(enquiry.contactName || "")}&phone=${encodeURIComponent(enquiry.contactPhone || "")}&notes=${encodeURIComponent(enquiry.notes || "")}`}
