@@ -12,8 +12,12 @@ export default function NewMedicationFormClient({ residents }: { residents: any[
   const router = useRouter();
 
   const [residentId, setResidentId] = useState("");
+  
+  // Default to today
+  const today = new Date().toISOString().split('T')[0];
+
   const [medications, setMedications] = useState([
-    { name: "", dosage: "", frequency: "Morning", instructions: "" }
+    { name: "", dosage: "", frequency: "Morning", route: "Oral", startDate: today, endDate: "", instructions: "" }
   ]);
 
   if (residents.length === 0) {
@@ -26,7 +30,7 @@ export default function NewMedicationFormClient({ residents }: { residents: any[
   }
 
   const handleAddRow = () => {
-    setMedications([...medications, { name: "", dosage: "", frequency: "Morning", instructions: "" }]);
+    setMedications([...medications, { name: "", dosage: "", frequency: "Morning", route: "Oral", startDate: today, endDate: "", instructions: "" }]);
   };
 
   const handleRemoveRow = (index: number) => {
@@ -49,9 +53,9 @@ export default function NewMedicationFormClient({ residents }: { residents: any[
     }
     
     // Validate
-    const invalid = medications.some(m => !m.name || !m.dosage || !m.frequency);
+    const invalid = medications.some(m => !m.name || !m.dosage || !m.frequency || !m.startDate);
     if (invalid) {
-      Swal.fire('Error', 'Please fill all required fields (Name, Dosage, Frequency) for all medications.', 'error');
+      Swal.fire('Error', 'Please fill all required fields (Name, Dosage, Frequency, Start Date).', 'error');
       return;
     }
 
@@ -106,8 +110,8 @@ export default function NewMedicationFormClient({ residents }: { residents: any[
               </button>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="md:col-span-2">
                 <label className="block text-xs font-bold text-gray-700 mb-1">Medication Name *</label>
                 <input 
                   type="text" 
@@ -125,12 +129,28 @@ export default function NewMedicationFormClient({ residents }: { residents: any[
                   required 
                   value={med.dosage}
                   onChange={(e) => handleChange(index, 'dosage', e.target.value)}
-                  placeholder="e.g. 500mg" 
+                  placeholder="e.g. 500mg, 2 Puffs" 
                   className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" 
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">Frequency *</label>
+                <label className="block text-xs font-bold text-gray-700 mb-1">Route</label>
+                <select 
+                  value={med.route}
+                  onChange={(e) => handleChange(index, 'route', e.target.value)}
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                >
+                  <option value="Oral">Oral (Mouth)</option>
+                  <option value="Injection">Injection</option>
+                  <option value="Topical">Topical (Skin)</option>
+                  <option value="Inhalation">Inhalation</option>
+                  <option value="Drops">Drops</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">Frequency (Time) *</label>
                 <select 
                   required 
                   value={med.frequency}
@@ -143,16 +163,39 @@ export default function NewMedicationFormClient({ residents }: { residents: any[
                   <option value="Night">Night</option>
                   <option value="Twice Daily (BID)">Twice Daily (BID)</option>
                   <option value="Three Times Daily (TID)">Three Times Daily (TID)</option>
+                  <option value="Four Times Daily (QDS)">Four Times Daily (QDS)</option>
                   <option value="As Needed (PRN)">As Needed (PRN)</option>
                 </select>
               </div>
-              <div className="md:col-span-3">
-                <label className="block text-xs font-bold text-gray-700 mb-1">Instructions (Optional)</label>
+              
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">Start Date *</label>
+                <input 
+                  type="date" 
+                  required 
+                  value={med.startDate}
+                  onChange={(e) => handleChange(index, 'startDate', e.target.value)}
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" 
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">End Date (Optional)</label>
+                <input 
+                  type="date" 
+                  value={med.endDate}
+                  onChange={(e) => handleChange(index, 'endDate', e.target.value)}
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" 
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">Instructions</label>
                 <input 
                   type="text" 
                   value={med.instructions}
                   onChange={(e) => handleChange(index, 'instructions', e.target.value)}
-                  placeholder="e.g. Take with food" 
+                  placeholder="e.g. Take after food" 
                   className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" 
                 />
               </div>

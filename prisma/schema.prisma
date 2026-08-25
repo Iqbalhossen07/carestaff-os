@@ -136,6 +136,10 @@ model Medication {
   dosage      String
   frequency   String   // e.g., "Morning", "Evening", "As needed"
   instructions String?
+  startDate   DateTime @default(now())
+  endDate     DateTime?
+  route       String   @default("Oral")
+  status      String   @default("ACTIVE")
   
   residentId  String
   resident    Resident @relation(fields: [residentId], references: [id])

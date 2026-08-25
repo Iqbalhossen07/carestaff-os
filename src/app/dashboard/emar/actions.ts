@@ -16,7 +16,11 @@ export async function addMultipleMedications(data: { residentId: string, medicat
       name: med.name,
       dosage: med.dosage,
       frequency: med.frequency,
+      route: med.route || "Oral",
+      startDate: new Date(med.startDate),
+      endDate: med.endDate ? new Date(med.endDate) : null,
       instructions: med.instructions || null,
+      status: "ACTIVE"
     }));
 
     await prisma.medication.createMany({
@@ -33,7 +37,7 @@ export async function addMultipleMedications(data: { residentId: string, medicat
 
 export async function updateMedication(id: string, data: any) {
   try {
-    const { name, dosage, frequency, instructions } = data;
+    const { name, dosage, frequency, route, startDate, endDate, status, instructions } = data;
 
     if (!name || !dosage) {
       return { error: "Missing required fields" };
@@ -45,6 +49,10 @@ export async function updateMedication(id: string, data: any) {
         name,
         dosage,
         frequency,
+        route,
+        startDate: new Date(startDate),
+        endDate: endDate ? new Date(endDate) : null,
+        status,
         instructions: instructions || null,
       },
     });

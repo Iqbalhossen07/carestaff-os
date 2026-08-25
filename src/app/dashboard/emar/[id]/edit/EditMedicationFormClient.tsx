@@ -10,6 +10,11 @@ export default function EditMedicationFormClient({ medication }: { medication: a
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  const toLocalDate = (dateStr: string) => {
+    if (!dateStr) return "";
+    return new Date(dateStr).toISOString().split('T')[0];
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -18,6 +23,10 @@ export default function EditMedicationFormClient({ medication }: { medication: a
       name: formData.get("name") as string,
       dosage: formData.get("dosage") as string,
       frequency: formData.get("frequency") as string,
+      route: formData.get("route") as string,
+      startDate: formData.get("startDate") as string,
+      endDate: formData.get("endDate") as string,
+      status: formData.get("status") as string,
       instructions: formData.get("instructions") as string,
     };
 
@@ -37,16 +46,30 @@ export default function EditMedicationFormClient({ medication }: { medication: a
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div>
+        <div className="sm:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">Medication Name *</label>
           <input type="text" name="name" defaultValue={medication.name} required className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" />
         </div>
+        
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Dosage *</label>
           <input type="text" name="dosage" defaultValue={medication.dosage} required className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" />
         </div>
+        
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Frequency *</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Route</label>
+          <select name="route" defaultValue={medication.route || "Oral"} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+            <option value="Oral">Oral (Mouth)</option>
+            <option value="Injection">Injection</option>
+            <option value="Topical">Topical (Skin)</option>
+            <option value="Inhalation">Inhalation</option>
+            <option value="Drops">Drops</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Frequency (Time) *</label>
           <select name="frequency" defaultValue={medication.frequency} required className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
             <option value="Morning">Morning</option>
             <option value="Afternoon">Afternoon</option>
@@ -54,10 +77,31 @@ export default function EditMedicationFormClient({ medication }: { medication: a
             <option value="Night">Night</option>
             <option value="Twice Daily (BID)">Twice Daily (BID)</option>
             <option value="Three Times Daily (TID)">Three Times Daily (TID)</option>
+            <option value="Four Times Daily (QDS)">Four Times Daily (QDS)</option>
             <option value="As Needed (PRN)">As Needed (PRN)</option>
           </select>
         </div>
+        
         <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+          <select name="status" defaultValue={medication.status || "ACTIVE"} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+            <option value="ACTIVE">Active</option>
+            <option value="DISCONTINUED">Discontinued</option>
+            <option value="COMPLETED">Completed</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Start Date *</label>
+          <input type="date" name="startDate" defaultValue={toLocalDate(medication.startDate)} required className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">End Date (Optional)</label>
+          <input type="date" name="endDate" defaultValue={toLocalDate(medication.endDate)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" />
+        </div>
+
+        <div className="sm:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">Instructions (Optional)</label>
           <input type="text" name="instructions" defaultValue={medication.instructions || ""} placeholder="e.g. Take with food" className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" />
         </div>
