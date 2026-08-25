@@ -4,6 +4,7 @@ import { useState } from "react";
 import { updateResident } from "../../actions";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Swal from "sweetalert2";
 
 export default function EditResidentClient({ residentId, resident }: { residentId: string, resident: any }) {
   const [loading, setLoading] = useState(false);
@@ -30,11 +31,15 @@ export default function EditResidentClient({ residentId, resident }: { residentI
     };
 
     try {
-      await updateResident(data);
+      const res = await updateResident(data);
+      if (res.error) {
+        throw new Error(res.error);
+      }
+      Swal.fire('Success', 'Resident updated successfully', 'success');
       router.push("/dashboard/residents");
       router.refresh();
     } catch (error: any) {
-      alert(error.message || "Failed to update resident");
+      Swal.fire('Error', error.message || "Failed to update resident", 'error');
       setLoading(false);
     }
   };

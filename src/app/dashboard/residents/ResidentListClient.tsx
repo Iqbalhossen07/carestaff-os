@@ -39,7 +39,8 @@ export default function ResidentListClient({ initialResidents }: { initialReside
 
   const handleSingleDelete = async (id: string) => {
     try {
-      await deleteResident(id);
+      const res = await deleteResident(id);
+      if (res.error) throw new Error(res.error);
       Swal.fire('Deleted!', 'Resident has been removed.', 'success');
       setSelectedIds(prev => {
         const newSet = new Set(prev);
@@ -47,8 +48,8 @@ export default function ResidentListClient({ initialResidents }: { initialReside
         return newSet;
       });
       router.refresh(); // Refresh Next.js server data
-    } catch (e) {
-      Swal.fire('Error', 'Failed to delete resident.', 'error');
+    } catch (e: any) {
+      Swal.fire('Error', e.message || 'Failed to delete resident.', 'error');
     }
   };
 
@@ -67,13 +68,14 @@ export default function ResidentListClient({ initialResidents }: { initialReside
       setDeleting(true);
       try {
         for (const id of Array.from(selectedIds)) {
-          await deleteResident(id);
+          const res = await deleteResident(id);
+          if (res.error) throw new Error(res.error);
         }
         Swal.fire('Deleted!', `${selectedIds.size} residents have been deleted.`, 'success');
         setSelectedIds(new Set());
         router.refresh();
-      } catch (e) {
-        Swal.fire('Error', 'Error deleting some residents', 'error');
+      } catch (e: any) {
+        Swal.fire('Error', e.message || 'Error deleting some residents', 'error');
       }
       setDeleting(false);
     }

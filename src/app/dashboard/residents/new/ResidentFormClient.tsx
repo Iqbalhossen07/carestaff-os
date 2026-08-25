@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createResident } from "../actions";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Swal from "sweetalert2";
 
 export default function ResidentFormClient({ careHomeId }: { careHomeId: string }) {
   const [loading, setLoading] = useState(false);
@@ -28,11 +29,15 @@ export default function ResidentFormClient({ careHomeId }: { careHomeId: string 
     };
 
     try {
-      await createResident(data);
+      const res = await createResident(data);
+      if (res.error) {
+        throw new Error(res.error);
+      }
+      Swal.fire('Success', 'Resident added successfully', 'success');
       router.push("/dashboard/residents");
       router.refresh();
     } catch (error: any) {
-      alert(error.message || "Failed to save resident");
+      Swal.fire('Error', error.message || "Failed to save resident", 'error');
       setLoading(false);
     }
   };
