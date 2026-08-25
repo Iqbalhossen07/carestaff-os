@@ -102,15 +102,18 @@ enum UserType {
 // ======================================================
 
 model Resident {
-  id              String   @id @default(uuid())
-  firstName       String
-  lastName        String
-  nhsNumber       String?
-  dateOfBirth     DateTime
-  roomNumber      String?
-  dietaryReqs     String?    @db.Text
-  allergies       String?    @db.Text
-  dietaryNeeds    String?
+  id                    String   @id @default(uuid())
+  firstName             String
+  lastName              String
+  nhsNumber             String?
+  dateOfBirth           DateTime
+  roomNumber            String?
+  dietaryReqs           String?    @db.Text
+  allergies             String?    @db.Text
+  dietaryNeeds          String?
+  medicalHistory        String?    @db.Text
+  emergencyContactName  String?
+  emergencyContactPhone String?
   
   careHomeId      String
   careHome        CareHome @relation(fields: [careHomeId], references: [id])
