@@ -114,6 +114,7 @@ model Resident {
   medicalHistory        String?    @db.Text
   emergencyContactName  String?
   emergencyContactPhone String?
+  photo                 String?
   
   careHomeId      String
   careHome        CareHome @relation(fields: [careHomeId], references: [id])

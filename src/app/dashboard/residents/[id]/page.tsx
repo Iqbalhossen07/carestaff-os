@@ -19,8 +19,12 @@ export default async function ResidentViewPage({ params }: { params: { id: strin
       
       <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
         <div className="flex items-center gap-6 mb-8">
-          <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-bold text-3xl">
-            {resident.firstName[0]}{resident.lastName[0]}
+          <div className="w-20 h-20 rounded-full flex items-center justify-center font-bold text-3xl overflow-hidden bg-emerald-100 text-emerald-600 shadow-sm border border-gray-200">
+            {resident.photo ? (
+              <img src={resident.photo} alt={`${resident.firstName}`} className="w-full h-full object-cover" />
+            ) : (
+              <>{resident.firstName[0]}{resident.lastName[0]}</>
+            )}
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">{resident.firstName} {resident.lastName}</h1>

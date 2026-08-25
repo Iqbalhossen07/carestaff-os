@@ -42,8 +42,12 @@ export default async function CarerResidentDetailPage({ params }: { params: Prom
       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-8 text-white">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-            <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border-4 border-white/30 text-3xl font-bold">
-              {resident.firstName.charAt(0)}{resident.lastName.charAt(0)}
+            <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border-4 border-white/30 text-3xl font-bold overflow-hidden">
+              {resident.photo ? (
+                <img src={resident.photo} alt={resident.firstName} className="w-full h-full object-cover" />
+              ) : (
+                <>{resident.firstName.charAt(0)}{resident.lastName.charAt(0)}</>
+              )}
             </div>
             <div className="text-center sm:text-left">
               <h1 className="text-3xl font-black">{resident.firstName} {resident.lastName}</h1>

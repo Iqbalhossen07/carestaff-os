@@ -15,11 +15,12 @@ export async function createResident(data: {
   dietaryReqs: string;
   emergencyContactName: string;
   emergencyContactPhone: string;
+  photo?: string;
 }) {
   try {
     const {
       careHomeId, firstName, lastName, dateOfBirth, nhsNumber, roomNumber,
-      medicalHistory, allergies, dietaryReqs, emergencyContactName, emergencyContactPhone
+      medicalHistory, allergies, dietaryReqs, emergencyContactName, emergencyContactPhone, photo
     } = data;
 
     if (!firstName || !lastName || !dateOfBirth) {
@@ -42,6 +43,7 @@ export async function createResident(data: {
         dietaryReqs: dietaryReqs || null,
         emergencyContactName: emergencyContactName || null,
         emergencyContactPhone: emergencyContactPhone || null,
+        photo: photo || null,
         careHomeId,
       },
     });
@@ -87,11 +89,12 @@ export async function updateResident(data: {
   dietaryReqs: string;
   emergencyContactName: string;
   emergencyContactPhone: string;
+  photo?: string;
 }) {
   try {
     const {
       id, firstName, lastName, dateOfBirth, nhsNumber, roomNumber,
-      medicalHistory, allergies, dietaryReqs, emergencyContactName, emergencyContactPhone
+      medicalHistory, allergies, dietaryReqs, emergencyContactName, emergencyContactPhone, photo
     } = data;
 
     if (!firstName || !lastName || !dateOfBirth) {
@@ -111,6 +114,7 @@ export async function updateResident(data: {
         dietaryReqs: dietaryReqs || null,
         emergencyContactName: emergencyContactName || null,
         emergencyContactPhone: emergencyContactPhone || null,
+        ...(photo !== undefined && { photo }),
       },
     });
 
