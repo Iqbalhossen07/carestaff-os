@@ -89,7 +89,7 @@ export default function CarerLayoutClient({ children, dbUser }: { children: Reac
 
       {/* Sidebar */}
       <div className={`fixed inset-y-0 left-0 z-50 w-full lg:w-64 transform transition-transform duration-300 lg:relative lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <CarerSidebar onClose={() => setSidebarOpen(false)} />
+        <CarerSidebar dbUser={dbUser} onClose={() => setSidebarOpen(false)} />
       </div>
 
       {/* Main content */}

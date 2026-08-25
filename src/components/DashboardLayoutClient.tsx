@@ -98,7 +98,7 @@ export default function DashboardLayoutClient({ children, dbUser }: { children: 
 
       {/* Sidebar */}
       <div className={`fixed inset-y-0 left-0 z-50 w-full lg:w-64 transform transition-transform duration-300 lg:relative lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <Sidebar onClose={() => setSidebarOpen(false)} />
+        <Sidebar dbUser={dbUser} onClose={() => setSidebarOpen(false)} />
       </div>
 
       {/* Main content */}

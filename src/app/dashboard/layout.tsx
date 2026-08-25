@@ -29,7 +29,7 @@ export default async function DashboardLayout({
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { name: true, email: true, image: true, userType: true }
+    select: { name: true, email: true, image: true, userType: true, role: true }
   });
 
   return (

@@ -21,27 +21,35 @@ import {
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
-const navItems = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Roles & Permissions", href: "/dashboard/roles", icon: ShieldCheck },
-  { name: "Staff Management", href: "/dashboard/staff", icon: Users },
-  { name: "Residents", href: "/dashboard/residents", icon: Users },
-  { name: "Sales & Admissions", href: "/dashboard/crm", icon: PhoneCall },
-  { name: "Rota & Shifts", href: "/dashboard/rota", icon: CalendarDays },
-  { name: "eMAR Overview", href: "/dashboard/emar", icon: Pill },
-  { name: "Messages", href: "/dashboard/messages", icon: MessageSquare },
-  { name: "Kitchen & Nutrition", href: "/dashboard/kitchen", icon: UtensilsCrossed },
-  { name: "Maintenance", href: "/dashboard/maintenance", icon: Wrench },
-  { name: "Visitor Logs", href: "/dashboard/visitors", icon: UserCheck },
-  { name: "Safeguarding", href: "/dashboard/incidents", icon: ShieldAlert },
-  { name: "Finance & Billing", href: "/dashboard/finance", icon: PoundSterling },
-  { name: "Reports & Compliance", href: "/dashboard/reports", icon: FileText },
-  { name: "My Profile", href: "/dashboard/profile", icon: UserCheck },
-  { name: "Global Settings", href: "/dashboard/settings", icon: Settings },
-];
-
-export default function Sidebar({ onClose }: { onClose?: () => void }) {
+export default function Sidebar({ dbUser, onClose }: { dbUser?: any, onClose?: () => void }) {
   const pathname = usePathname();
+  const role = dbUser?.role;
+  const isSuperAdmin = dbUser?.userType === "SUPER_ADMIN" || role?.isSuperAdmin;
+
+  const allNavItems = [
+    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, perm: role?.canViewDashboard },
+    { name: "Roles & Permissions", href: "/dashboard/roles", icon: ShieldCheck, perm: role?.canManageRoles },
+    { name: "Staff Management", href: "/dashboard/staff", icon: Users, perm: role?.canManageStaff },
+    { name: "Residents", href: "/dashboard/residents", icon: Users, perm: role?.canViewResidents },
+    { name: "Sales & Admissions", href: "/dashboard/crm", icon: PhoneCall, perm: role?.canManageCRM },
+    { name: "Rota & Shifts", href: "/dashboard/rota", icon: CalendarDays, perm: role?.canEditRota },
+    { name: "eMAR Overview", href: "/dashboard/emar", icon: Pill, perm: role?.canViewEmar },
+    { name: "Messages", href: "/dashboard/messages", icon: MessageSquare, perm: role?.canManageMessages },
+    { name: "Kitchen & Nutrition", href: "/dashboard/kitchen", icon: UtensilsCrossed, perm: role?.canManageKitchen },
+    { name: "Maintenance", href: "/dashboard/maintenance", icon: Wrench, perm: role?.canManageMaintenance },
+    { name: "Visitor Logs", href: "/dashboard/visitors", icon: UserCheck, perm: role?.canManageVisitors },
+    { name: "Safeguarding", href: "/dashboard/incidents", icon: ShieldAlert, perm: role?.canManageSafeguarding },
+    { name: "Finance & Billing", href: "/dashboard/finance", icon: PoundSterling, perm: role?.canViewFinance },
+    { name: "Reports & Compliance", href: "/dashboard/reports", icon: FileText, perm: role?.canManageReports },
+    { name: "My Profile", href: "/dashboard/profile", icon: UserCheck, perm: role?.canManageProfile },
+    { name: "Global Settings", href: "/dashboard/settings", icon: Settings, perm: role?.canManageSettings },
+  ];
+
+  const navItems = allNavItems.filter(item => {
+    if (isSuperAdmin) return true;
+    if (!role) return true; // fallback
+    return item.perm === true;
+  });
 
   return (
     <aside className="w-full lg:w-64 bg-gray-900 text-white min-h-screen flex flex-col h-full overflow-y-auto">
