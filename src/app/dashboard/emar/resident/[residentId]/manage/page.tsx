@@ -11,11 +11,11 @@ export default async function ManageResidentMedicationsPage({ params }: { params
   
   const { residentId } = await params;
   
-  const resident = await prisma.user.findUnique({
+  const resident = await prisma.resident.findUnique({
     where: { id: residentId },
     include: {
       medications: {
-        orderBy: { createdAt: 'asc' }
+        orderBy: { startDate: 'asc' }
       }
     }
   });

@@ -24,10 +24,8 @@ export default async function EmarOverviewPage({ searchParams }: any) {
     endOfDay.setHours(23, 59, 59, 999);
 
     // Fetch Residents with their Active Medications for the selected date
-    const residents = await prisma.user.findMany({
-      where: { 
-        role: { name: "Resident" },
-      },
+    const residents = await prisma.resident.findMany({
+      
       include: {
         medications: {
           where: {
