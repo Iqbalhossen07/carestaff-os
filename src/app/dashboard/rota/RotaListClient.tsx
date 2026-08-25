@@ -8,7 +8,7 @@ import { assignShift, deleteShift } from "./actions";
 import Swal from "sweetalert2";
 import { InlineActionButtons } from "@/components/ui/ActionButtons";
 
-export default function RotaListClient({ initialShifts, staffMembers }: { initialShifts: any[], staffMembers: any[] }) {
+export default function RotaListClient({ initialShifts, staffMembers, roles }: { initialShifts: any[], staffMembers: any[], roles: any[] }) {
   const router = useRouter();
 
   const handleDelete = async (id: string) => {
@@ -78,6 +78,8 @@ export default function RotaListClient({ initialShifts, staffMembers }: { initia
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {groupedShifts[dateStr].map((shift: any) => {
               const isAssigned = !!shift.assignedToId;
+              const shiftRoleId = roles?.find(r => r.name === shift.title)?.id;
+              const validStaff = shiftRoleId ? staffMembers.filter(s => s.roleId === shiftRoleId) : staffMembers;
 
               return (
                 <div key={shift.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden relative">
@@ -130,9 +132,13 @@ export default function RotaListClient({ initialShifts, staffMembers }: { initia
                               className="w-full text-sm border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 px-3 py-2 outline-none bg-white font-medium text-gray-700"
                             >
                               <option value="">Quick Assign Staff...</option>
-                              {staffMembers.map(staff => (
-                                <option key={staff.id} value={staff.id}>{staff.name}</option>
-                              ))}
+                              {validStaff.length > 0 ? (
+                                validStaff.map(staff => (
+                                  <option key={staff.id} value={staff.id}>{staff.name}</option>
+                                ))
+                              ) : (
+                                <option value="" disabled>No staff available for this role</option>
+                              )}
                             </select>
                           </div>
                         </div>

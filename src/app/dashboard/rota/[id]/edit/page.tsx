@@ -21,7 +21,7 @@ export default async function EditShiftPage({ params }: { params: Promise<{ id: 
 
   const staffMembers = await prisma.user.findMany({
     where: { careHomeId: session?.user?.careHomeId, userType: "WORKER" },
-    select: { id: true, name: true, email: true },
+    select: { id: true, name: true, email: true, roleId: true },
     orderBy: { name: 'asc' }
   });
 

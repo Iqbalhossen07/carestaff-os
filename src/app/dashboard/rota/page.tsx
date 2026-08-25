@@ -17,7 +17,12 @@ export default async function RotaPage() {
 
   const staffMembers = await prisma.user.findMany({
     where: { careHomeId, userType: "WORKER" },
-    select: { id: true, name: true, email: true }
+    select: { id: true, name: true, email: true, roleId: true }
+  });
+
+  const roles = await prisma.role.findMany({
+    where: { careHomeId },
+    select: { id: true, name: true }
   });
 
   return (
@@ -40,7 +45,7 @@ export default async function RotaPage() {
         </Link>
       </div>
 
-      <RotaListClient initialShifts={shifts} staffMembers={staffMembers} />
+      <RotaListClient initialShifts={shifts} staffMembers={staffMembers} roles={roles} />
     </div>
   );
 }

@@ -8,7 +8,13 @@ import Swal from "sweetalert2";
 
 export default function EditShiftFormClient({ shift, staffMembers, roles }: { shift: any, staffMembers: any[], roles: any[] }) {
   const [loading, setLoading] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(shift.title || "");
   const router = useRouter();
+
+  const selectedRoleId = roles.find(r => r.name === selectedRole)?.id;
+  const filteredStaff = selectedRoleId 
+    ? staffMembers.filter(s => s.roleId === selectedRoleId)
+    : staffMembers;
 
   const toLocalISO = (dateStr: string) => {
     const d = new Date(dateStr);
@@ -45,7 +51,13 @@ export default function EditShiftFormClient({ shift, staffMembers, roles }: { sh
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Required Role *</label>
-        <select name="title" defaultValue={shift.title} required className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+        <select 
+          name="title" 
+          required 
+          value={selectedRole}
+          onChange={(e) => setSelectedRole(e.target.value)}
+          className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+        >
           <option value="">Select Role...</option>
           {roles.map(r => (
             <option key={r.id} value={r.name}>{r.name}</option>
@@ -68,10 +80,23 @@ export default function EditShiftFormClient({ shift, staffMembers, roles }: { sh
         <label className="block text-sm font-medium text-gray-700 mb-1">Assign to Staff (Optional)</label>
         <select name="assignedToId" defaultValue={shift.assignedToId || ""} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
           <option value="">-- Leave Open (Staff can pick up) --</option>
-          {staffMembers.map(staff => (
-            <option key={staff.id} value={staff.id}>{staff.name} - {staff.email}</option>
-          ))}
+          {filteredStaff.length > 0 ? (
+            filteredStaff.map(staff => (
+              <option key={staff.id} value={staff.id}>{staff.name} - {staff.email}</option>
+            ))
+          ) : (
+            selectedRole ? (
+              <option value="" disabled>No staff members found with the '{selectedRole}' role</option>
+            ) : (
+              <option value="" disabled>Select a role first to see available staff</option>
+            )
+          )}
         </select>
+        {selectedRole && filteredStaff.length === 0 && (
+          <p className="text-sm text-amber-600 mt-2 font-medium">
+            No staff assigned to this role yet. You can still leave this shift Open.
+          </p>
+        )}
       </div>
 
       <div>

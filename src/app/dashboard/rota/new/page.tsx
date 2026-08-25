@@ -11,7 +11,7 @@ export default async function AddShiftPage() {
 
   const staffMembers = await prisma.user.findMany({
     where: { careHomeId, userType: "WORKER" },
-    select: { id: true, name: true, email: true },
+    select: { id: true, name: true, email: true, roleId: true },
     orderBy: { name: 'asc' }
   });
 
