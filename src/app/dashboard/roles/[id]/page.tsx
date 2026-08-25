@@ -6,15 +6,16 @@ import Link from "next/link";
 import CreateRoleForm from "../CreateRoleForm";
 import { notFound } from "next/navigation";
 
-export default async function EditRolePage({ params }: { params: { id: string } }) {
+export default async function EditRolePage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
   const session = await getServerSession(authOptions);
   
   if (!session?.user?.careHomeId) {
     return <div>Unauthorized</div>;
   }
 
-  const role = await prisma.role.findUnique({
-    where: { id: params.id, careHomeId: session.user.careHomeId }
+  const role = await prisma.role.findFirst({
+    where: { id: resolvedParams.id, careHomeId: session.user.careHomeId }
   });
 
   if (!role) {
