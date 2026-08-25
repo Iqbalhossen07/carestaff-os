@@ -72,14 +72,69 @@ export default async function AddResidentPage() {
             </div>
           </div>
 
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Room Number</label>
+              <input
+                type="text"
+                name="roomNumber"
+                placeholder="e.g. 101-A"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Dietary Requirements</label>
+              <input
+                type="text"
+                name="dietaryReqs"
+                placeholder="e.g. Vegetarian, Diabetic"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
+              />
+            </div>
+          </div>
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Room Number</label>
-            <input
-              type="text"
-              name="roomNumber"
-              placeholder="e.g. 101-A"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
-            />
+            <label className="block text-sm font-medium text-gray-700 mb-1">Allergies</label>
+            <textarea
+              name="allergies"
+              rows={2}
+              placeholder="e.g. Penicillin, Peanuts"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900 resize-none"
+            ></textarea>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Medical History & Care Plan</label>
+            <textarea
+              name="medicalHistory"
+              rows={3}
+              placeholder="Provide a brief summary of medical history and care instructions..."
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900 resize-none"
+            ></textarea>
+          </div>
+
+          <div className="border-t border-gray-200 pt-6 mt-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Emergency Contact</h3>
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Contact Name</label>
+                <input
+                  type="text"
+                  name="emergencyContactName"
+                  placeholder="e.g. Jane Doe (Daughter)"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Contact Phone</label>
+                <input
+                  type="text"
+                  name="emergencyContactPhone"
+                  placeholder="e.g. +44 7700 900000"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="pt-4 flex justify-end gap-3">

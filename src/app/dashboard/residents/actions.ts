@@ -10,6 +10,12 @@ export async function createResident(formData: FormData, careHomeId: string) {
   const dateOfBirth = formData.get("dateOfBirth") as string;
   const nhsNumber = formData.get("nhsNumber") as string;
   const roomNumber = formData.get("roomNumber") as string;
+  
+  const medicalHistory = formData.get("medicalHistory") as string;
+  const allergies = formData.get("allergies") as string;
+  const dietaryReqs = formData.get("dietaryReqs") as string;
+  const emergencyContactName = formData.get("emergencyContactName") as string;
+  const emergencyContactPhone = formData.get("emergencyContactPhone") as string;
 
   if (!firstName || !lastName || !dateOfBirth) {
     throw new Error("Missing required fields");
@@ -22,6 +28,11 @@ export async function createResident(formData: FormData, careHomeId: string) {
       dateOfBirth: new Date(dateOfBirth),
       nhsNumber: nhsNumber || null,
       roomNumber: roomNumber || null,
+      medicalHistory: medicalHistory || null,
+      allergies: allergies || null,
+      dietaryReqs: dietaryReqs || null,
+      emergencyContactName: emergencyContactName || null,
+      emergencyContactPhone: emergencyContactPhone || null,
       careHomeId,
     },
   });
@@ -45,6 +56,12 @@ export async function updateResident(id: string, formData: FormData) {
   const nhsNumber = formData.get("nhsNumber") as string;
   const roomNumber = formData.get("roomNumber") as string;
 
+  const medicalHistory = formData.get("medicalHistory") as string;
+  const allergies = formData.get("allergies") as string;
+  const dietaryReqs = formData.get("dietaryReqs") as string;
+  const emergencyContactName = formData.get("emergencyContactName") as string;
+  const emergencyContactPhone = formData.get("emergencyContactPhone") as string;
+
   if (!firstName || !lastName || !dateOfBirth) {
     throw new Error("Missing required fields");
   }
@@ -57,6 +74,11 @@ export async function updateResident(id: string, formData: FormData) {
       dateOfBirth: new Date(dateOfBirth),
       nhsNumber: nhsNumber || null,
       roomNumber: roomNumber || null,
+      medicalHistory: medicalHistory || null,
+      allergies: allergies || null,
+      dietaryReqs: dietaryReqs || null,
+      emergencyContactName: emergencyContactName || null,
+      emergencyContactPhone: emergencyContactPhone || null,
     },
   });
 
