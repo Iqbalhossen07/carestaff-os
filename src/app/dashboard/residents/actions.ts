@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-export async function createResident(formData: FormData, careHomeId: string) {
+export async function createResident(careHomeId: string, formData: FormData) {
   const firstName = formData.get("firstName") as string;
   const lastName = formData.get("lastName") as string;
   const dateOfBirth = formData.get("dateOfBirth") as string;

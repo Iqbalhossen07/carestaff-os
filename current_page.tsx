@@ -8,10 +8,13 @@ export default async function AddResidentPage() {
   const session = await getServerSession(authOptions);
   
   // We need to pass the careHomeId to the Server Action
-  const careHomeId = session?.user?.careHomeId as string || "";
+  const careHomeId = session?.user?.careHomeId as string;
 
-  // Use standard bind to pass extra arguments
-  const createResidentWithId = createResident.bind(null, careHomeId);
+  // We wrap the server action to pass the careHomeId
+  const submitAction = async (formData: FormData) => {
+    "use server";
+    await createResident(formData, careHomeId);
+  };
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -24,7 +27,7 @@ export default async function AddResidentPage() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">Add New Resident</h1>
         
-        <form action={createResidentWithId} className="space-y-6">
+        <form action={submitAction} className="space-y-6">
           <div className="grid grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">First Name *</label>

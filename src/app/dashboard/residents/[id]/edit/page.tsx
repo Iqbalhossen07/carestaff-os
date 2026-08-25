@@ -13,11 +13,8 @@ export default async function EditResidentPage({ params }: { params: { id: strin
 
   if (!resident) notFound();
 
-  // Wrap action to pass the ID
-  const submitAction = async (formData: FormData) => {
-    "use server";
-    await updateResident(id, formData);
-  };
+  // Use standard bind to pass extra arguments
+  const updateResidentWithId = updateResident.bind(null, id);
 
   // Format date for date input (YYYY-MM-DD)
   const dobFormatted = new Date(resident.dateOfBirth).toISOString().split('T')[0];
@@ -33,7 +30,7 @@ export default async function EditResidentPage({ params }: { params: { id: strin
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">Edit Resident</h1>
         
-        <form action={submitAction} className="space-y-6">
+        <form action={updateResidentWithId} className="space-y-6">
           <div className="grid grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
