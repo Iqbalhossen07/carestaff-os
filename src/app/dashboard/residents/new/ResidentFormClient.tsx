@@ -15,7 +15,8 @@ export default function ResidentFormClient({ careHomeId }: { careHomeId: string 
     const formData = new FormData(e.currentTarget);
     try {
       await createResident(careHomeId, formData);
-      // redirect is handled in the action, but just in case:
+      router.push("/dashboard/residents");
+      router.refresh();
     } catch (error: any) {
       alert(error.message || "Failed to save resident");
       setLoading(false);

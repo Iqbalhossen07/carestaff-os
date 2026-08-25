@@ -17,6 +17,8 @@ export default function EditResidentClient({ residentId, resident }: { residentI
     const formData = new FormData(e.currentTarget);
     try {
       await updateResident(residentId, formData);
+      router.push("/dashboard/residents");
+      router.refresh();
     } catch (error: any) {
       alert(error.message || "Failed to update resident");
       setLoading(false);

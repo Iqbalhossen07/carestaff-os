@@ -39,14 +39,23 @@ export async function createResident(careHomeId: string, formData: FormData) {
 
   revalidatePath("/dashboard/residents");
   revalidatePath("/dashboard");
-  redirect("/dashboard/residents");
+  // return true to indicate success instead of redirecting
+  return { success: true };
 }
 
 export async function deleteResident(id: string) {
-  await prisma.resident.delete({
-    where: { id },
-  });
+  // Delete related records first to avoid foreign key constraints
+  await prisma.$transaction([
+    prisma.progressNote.deleteMany({ where: { residentId: id } }),
+    prisma.medication.deleteMany({ where: { residentId: id } }),
+    prisma.emarLog.deleteMany({ where: { residentId: id } }),
+    prisma.familyLink.deleteMany({ where: { residentId: id } }),
+    prisma.invoice.deleteMany({ where: { residentId: id } }),
+    prisma.resident.delete({ where: { id } })
+  ]);
+  
   revalidatePath("/dashboard/residents");
+  return { success: true };
 }
 
 export async function updateResident(id: string, formData: FormData) {
@@ -84,5 +93,5 @@ export async function updateResident(id: string, formData: FormData) {
 
   revalidatePath("/dashboard/residents");
   revalidatePath(`/dashboard/residents/${id}`);
-  redirect("/dashboard/residents");
+  return { success: true };
 }
