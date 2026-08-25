@@ -1,103 +1,89 @@
 "use client";
 
 import { useState } from "react";
-import { addMedication, logMedicationAdmin } from "./actions";
+import { logMedicationAdmin, deleteMedication } from "./actions";
+import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
+import { InlineActionButtons } from "@/components/ui/ActionButtons";
 
-export function AddMedicationForm({ residents }: { residents: any[] }) {
-  const [loading, setLoading] = useState(false);
+export function EmarActionButtons({ medicationId }: { medicationId: string }) {
+  const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
+  const handleDelete = async () => {
     try {
-      await addMedication(new FormData(e.currentTarget));
-      (e.target as HTMLFormElement).reset();
-      alert("Medication added successfully!");
-    } catch (error) {
-      alert("Failed to add medication.");
+      const res = await deleteMedication(medicationId);
+      if (res.error) throw new Error(res.error);
+      Swal.fire('Deleted!', 'Medication has been removed.', 'success');
+      router.refresh();
+    } catch (e: any) {
+      Swal.fire('Error', e.message || 'Failed to delete.', 'error');
     }
-    setLoading(false);
   };
 
-  if (residents.length === 0) {
-    return <div className="p-4 bg-yellow-50 text-yellow-700 rounded-lg text-sm">Please add a resident first before adding medications.</div>;
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <h3 className="font-bold text-gray-900 text-xl mb-6">Add New Medication</h3>
-      
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Select Resident</label>
-        <select name="residentId" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500">
-          <option value="">-- Choose Resident --</option>
-          {residents.map(r => (
-            <option key={r.id} value={r.id}>{r.firstName} {r.lastName}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Medication Name</label>
-          <input type="text" name="name" required placeholder="e.g. Paracetamol" className="w-full px-4 py-2 border rounded-lg" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Dosage</label>
-          <input type="text" name="dosage" required placeholder="e.g. 500mg" className="w-full px-4 py-2 border rounded-lg" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Frequency</label>
-          <select name="frequency" required className="w-full px-4 py-2 border rounded-lg">
-            <option value="Morning">Morning</option>
-            <option value="Afternoon">Afternoon</option>
-            <option value="Evening">Evening</option>
-            <option value="Night">Night</option>
-            <option value="As Needed (PRN)">As Needed (PRN)</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Instructions</label>
-          <input type="text" name="instructions" placeholder="Take with food" className="w-full px-4 py-2 border rounded-lg" />
-        </div>
-      </div>
-
-      <button type="submit" disabled={loading} className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg">
-        {loading ? "Adding..." : "Add Medication"}
-      </button>
-    </form>
+    <InlineActionButtons 
+      editHref={`/dashboard/emar/${medicationId}/edit`}
+      onDelete={handleDelete}
+      viewHref={`/dashboard/emar/${medicationId}`}
+      itemName="Medication"
+    />
   );
 }
 
-export function EmarActionButtons({ medicationId, residentId, staffId }: { medicationId: string, residentId: string, staffId: string }) {
+export function LogMedicationButton({ medicationId, residentId, staffId }: { medicationId: string, residentId: string, staffId: string }) {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleAction = async (status: "ADMINISTERED" | "REFUSED" | "MISSED") => {
+    if (status === "REFUSED") {
+      const { value: reason } = await Swal.fire({
+        title: 'Reason for Refusal',
+        input: 'text',
+        inputLabel: 'Why did the resident refuse this medication?',
+        inputPlaceholder: 'e.g. Feels nauseous, Sleeping...',
+        showCancelButton: true,
+        inputValidator: (value) => {
+          if (!value) return 'You need to write something!'
+        }
+      });
+      if (!reason) return;
+      
+      setLoading(true);
+      await logMedicationAdmin({ medicationId, residentId, staffId, status, refusalReason: reason });
+      setLoading(false);
+      Swal.fire('Logged', 'Refusal has been recorded.', 'warning');
+      router.refresh();
+      return;
+    }
+
+    // Direct log for Given or Missed
     setLoading(true);
-    await logMedicationAdmin(medicationId, residentId, staffId, status);
+    await logMedicationAdmin({ medicationId, residentId, staffId, status });
     setLoading(false);
+    Swal.fire('Logged', `Medication marked as ${status.toLowerCase()}.`, status === "ADMINISTERED" ? 'success' : 'error');
+    router.refresh();
   };
 
   return (
-    <div className="flex gap-2 mt-3">
+    <div className="flex gap-2">
       <button 
         onClick={() => handleAction("ADMINISTERED")}
         disabled={loading}
-        className="px-3 py-1 bg-green-100 hover:bg-green-200 text-green-800 text-xs font-bold rounded"
+        className="flex-1 px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-lg transition-colors border border-emerald-200 disabled:opacity-50"
       >
-        Given
+        Give
       </button>
       <button 
         onClick={() => handleAction("REFUSED")}
         disabled={loading}
-        className="px-3 py-1 bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs font-bold rounded"
+        className="flex-1 px-4 py-2 bg-orange-50 hover:bg-orange-100 text-orange-700 font-bold rounded-lg transition-colors border border-orange-200 disabled:opacity-50"
       >
         Refused
       </button>
       <button 
         onClick={() => handleAction("MISSED")}
         disabled={loading}
-        className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-800 text-xs font-bold rounded"
+        className="flex-1 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 font-bold rounded-lg transition-colors border border-red-200 disabled:opacity-50"
       >
         Missed
       </button>

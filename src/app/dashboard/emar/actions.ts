@@ -3,40 +3,100 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-export async function addMedication(formData: FormData) {
-  const residentId = formData.get("residentId") as string;
-  const name = formData.get("name") as string;
-  const dosage = formData.get("dosage") as string;
-  const frequency = formData.get("frequency") as string;
-  const instructions = formData.get("instructions") as string;
+export async function addMedication(data: any) {
+  try {
+    const { residentId, name, dosage, frequency, instructions } = data;
 
-  if (!residentId || !name || !dosage) {
-    throw new Error("Missing required fields");
+    if (!residentId || !name || !dosage) {
+      return { error: "Missing required fields" };
+    }
+
+    await prisma.medication.create({
+      data: {
+        residentId,
+        name,
+        dosage,
+        frequency,
+        instructions: instructions || null,
+      },
+    });
+
+    revalidatePath("/dashboard/emar");
+    return { success: true };
+  } catch (error: any) {
+    console.error("ADD MEDICATION ERROR:", error);
+    return { error: error?.message || "Failed to add medication" };
   }
-
-  await prisma.medication.create({
-    data: {
-      residentId,
-      name,
-      dosage,
-      frequency,
-      instructions,
-    },
-  });
-
-  revalidatePath("/dashboard/emar");
 }
 
-export async function logMedicationAdmin(medicationId: string, residentId: string, staffId: string, status: "ADMINISTERED" | "REFUSED" | "MISSED", refusalReason?: string) {
-  await prisma.emarLog.create({
-    data: {
-      medicationId,
-      residentId,
-      administeredById: staffId,
-      status,
-      refusalReason,
-    },
-  });
+export async function updateMedication(id: string, data: any) {
+  try {
+    const { name, dosage, frequency, instructions } = data;
 
-  revalidatePath("/dashboard/emar");
+    if (!name || !dosage) {
+      return { error: "Missing required fields" };
+    }
+
+    await prisma.medication.update({
+      where: { id },
+      data: {
+        name,
+        dosage,
+        frequency,
+        instructions: instructions || null,
+      },
+    });
+
+    revalidatePath("/dashboard/emar");
+    return { success: true };
+  } catch (error: any) {
+    console.error("UPDATE MEDICATION ERROR:", error);
+    return { error: error?.message || "Failed to update medication" };
+  }
+}
+
+export async function deleteMedication(id: string) {
+  try {
+    // Delete associated logs first to avoid foreign key constraint errors
+    await prisma.emarLog.deleteMany({
+      where: { medicationId: id }
+    });
+
+    await prisma.medication.delete({
+      where: { id }
+    });
+    
+    revalidatePath("/dashboard/emar");
+    return { success: true };
+  } catch (error: any) {
+    console.error("DELETE MEDICATION ERROR:", error);
+    return { error: error?.message || "Failed to delete medication" };
+  }
+}
+
+export async function logMedicationAdmin(data: any) {
+  try {
+    const { medicationId, residentId, staffId, status, refusalReason } = data;
+    
+    if (!medicationId || !residentId || !staffId || !status) {
+      return { error: "Missing required fields" };
+    }
+
+    await prisma.emarLog.create({
+      data: {
+        medicationId,
+        residentId,
+        administeredById: staffId,
+        status,
+        refusalReason: refusalReason || null,
+      },
+    });
+
+    revalidatePath("/dashboard/emar");
+    revalidatePath(`/dashboard/emar/${medicationId}`);
+    return { success: true };
+  } catch (error: any) {
+    console.error("LOG MEDICATION ERROR:", error);
+    return { error: error?.message || "Failed to log medication administration" };
+  }
 }
