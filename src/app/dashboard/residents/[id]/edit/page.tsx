@@ -1,10 +1,10 @@
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { updateResident } from "../../actions";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import EditResidentClient from "./EditResidentClient";
 
-export default async function EditResidentPage({ params }: { params: { id: string } }) {
+export default async function EditResidentPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   
   const resident = await prisma.resident.findUnique({
@@ -12,12 +12,6 @@ export default async function EditResidentPage({ params }: { params: { id: strin
   });
 
   if (!resident) notFound();
-
-  // Use standard bind to pass extra arguments
-  const updateResidentWithId = updateResident.bind(null, id);
-
-  // Format date for date input (YYYY-MM-DD)
-  const dobFormatted = new Date(resident.dateOfBirth).toISOString().split('T')[0];
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -29,133 +23,7 @@ export default async function EditResidentPage({ params }: { params: { id: strin
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">Edit Resident</h1>
-        
-        <form action={updateResidentWithId} className="space-y-6">
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
-              <input
-                type="text"
-                name="firstName"
-                defaultValue={resident.firstName}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
-              <input
-                type="text"
-                name="lastName"
-                defaultValue={resident.lastName}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth *</label>
-              <input
-                type="date"
-                name="dateOfBirth"
-                defaultValue={dobFormatted}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">NHS Number</label>
-              <input
-                type="text"
-                name="nhsNumber"
-                defaultValue={resident.nhsNumber || ""}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Room Number</label>
-              <input
-                type="text"
-                name="roomNumber"
-                defaultValue={resident.roomNumber || ""}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Dietary Requirements</label>
-              <input
-                type="text"
-                name="dietaryReqs"
-                defaultValue={resident.dietaryReqs || ""}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Allergies</label>
-            <textarea
-              name="allergies"
-              rows={2}
-              defaultValue={resident.allergies || ""}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900 resize-none"
-            ></textarea>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Medical History & Care Plan</label>
-            <textarea
-              name="medicalHistory"
-              rows={3}
-              defaultValue={resident.medicalHistory || ""}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900 resize-none"
-            ></textarea>
-          </div>
-
-          <div className="border-t border-gray-200 pt-6 mt-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Emergency Contact</h3>
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Contact Name</label>
-                <input
-                  type="text"
-                  name="emergencyContactName"
-                  defaultValue={resident.emergencyContactName || ""}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Contact Phone</label>
-                <input
-                  type="text"
-                  name="emergencyContactPhone"
-                  defaultValue={resident.emergencyContactPhone || ""}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-4 flex justify-end gap-3">
-            <Link 
-              href="/dashboard/residents"
-              className="px-6 py-2.5 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors"
-            >
-              Cancel
-            </Link>
-            <button
-              type="submit"
-              className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
-            >
-              Save Changes
-            </button>
-          </div>
-        </form>
+        <EditResidentClient residentId={id} resident={resident} />
       </div>
     </div>
   );
