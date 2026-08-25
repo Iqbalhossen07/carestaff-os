@@ -4,18 +4,23 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-export async function createResident(careHomeId: string, formData: FormData) {
-  const firstName = formData.get("firstName") as string;
-  const lastName = formData.get("lastName") as string;
-  const dateOfBirth = formData.get("dateOfBirth") as string;
-  const nhsNumber = formData.get("nhsNumber") as string;
-  const roomNumber = formData.get("roomNumber") as string;
-  
-  const medicalHistory = formData.get("medicalHistory") as string;
-  const allergies = formData.get("allergies") as string;
-  const dietaryReqs = formData.get("dietaryReqs") as string;
-  const emergencyContactName = formData.get("emergencyContactName") as string;
-  const emergencyContactPhone = formData.get("emergencyContactPhone") as string;
+export async function createResident(data: {
+  careHomeId: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  nhsNumber: string;
+  roomNumber: string;
+  medicalHistory: string;
+  allergies: string;
+  dietaryReqs: string;
+  emergencyContactName: string;
+  emergencyContactPhone: string;
+}) {
+  const {
+    careHomeId, firstName, lastName, dateOfBirth, nhsNumber, roomNumber,
+    medicalHistory, allergies, dietaryReqs, emergencyContactName, emergencyContactPhone
+  } = data;
 
   if (!firstName || !lastName || !dateOfBirth) {
     throw new Error("Missing required fields");
@@ -39,7 +44,6 @@ export async function createResident(careHomeId: string, formData: FormData) {
 
   revalidatePath("/dashboard/residents");
   revalidatePath("/dashboard");
-  // return true to indicate success instead of redirecting
   return { success: true };
 }
 
@@ -58,18 +62,23 @@ export async function deleteResident(id: string) {
   return { success: true };
 }
 
-export async function updateResident(id: string, formData: FormData) {
-  const firstName = formData.get("firstName") as string;
-  const lastName = formData.get("lastName") as string;
-  const dateOfBirth = formData.get("dateOfBirth") as string;
-  const nhsNumber = formData.get("nhsNumber") as string;
-  const roomNumber = formData.get("roomNumber") as string;
-
-  const medicalHistory = formData.get("medicalHistory") as string;
-  const allergies = formData.get("allergies") as string;
-  const dietaryReqs = formData.get("dietaryReqs") as string;
-  const emergencyContactName = formData.get("emergencyContactName") as string;
-  const emergencyContactPhone = formData.get("emergencyContactPhone") as string;
+export async function updateResident(data: {
+  id: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  nhsNumber: string;
+  roomNumber: string;
+  medicalHistory: string;
+  allergies: string;
+  dietaryReqs: string;
+  emergencyContactName: string;
+  emergencyContactPhone: string;
+}) {
+  const {
+    id, firstName, lastName, dateOfBirth, nhsNumber, roomNumber,
+    medicalHistory, allergies, dietaryReqs, emergencyContactName, emergencyContactPhone
+  } = data;
 
   if (!firstName || !lastName || !dateOfBirth) {
     throw new Error("Missing required fields");

@@ -13,8 +13,22 @@ export default function ResidentFormClient({ careHomeId }: { careHomeId: string 
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.currentTarget);
+    const data = {
+      careHomeId,
+      firstName: formData.get("firstName") as string,
+      lastName: formData.get("lastName") as string,
+      dateOfBirth: formData.get("dateOfBirth") as string,
+      nhsNumber: formData.get("nhsNumber") as string,
+      roomNumber: formData.get("roomNumber") as string,
+      medicalHistory: formData.get("medicalHistory") as string,
+      allergies: formData.get("allergies") as string,
+      dietaryReqs: formData.get("dietaryReqs") as string,
+      emergencyContactName: formData.get("emergencyContactName") as string,
+      emergencyContactPhone: formData.get("emergencyContactPhone") as string,
+    };
+
     try {
-      await createResident(careHomeId, formData);
+      await createResident(data);
       router.push("/dashboard/residents");
       router.refresh();
     } catch (error: any) {
