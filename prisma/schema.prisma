@@ -248,8 +248,8 @@ model Enquiry {
   careHomeId            String
   careHome              CareHome @relation(fields: [careHomeId], references: [id])
   
-  firstName             String
-  lastName              String
+  firstName             String   @default("")
+  lastName              String   @default("")
   contactName           String?
   contactPhone          String?
   contactEmail          String?
