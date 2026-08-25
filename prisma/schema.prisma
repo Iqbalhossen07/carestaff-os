@@ -34,11 +34,22 @@ model Role {
   careHome    CareHome @relation(fields: [careHomeId], references: [id])
   
   // Granular Permission Flags for Panel A
-  canViewEmar       Boolean @default(false)
-  canEditRota       Boolean @default(false)
-  canViewFinance    Boolean @default(false)
-  canManageKitchen  Boolean @default(false)
-  isSuperAdmin      Boolean @default(false)
+  canViewEmar           Boolean @default(false)
+  canEditRota           Boolean @default(false)
+  canViewFinance        Boolean @default(false)
+  canManageKitchen      Boolean @default(false)
+  
+  // New comprehensive permissions
+  canManageStaff        Boolean @default(false)
+  canViewResidents      Boolean @default(true)
+  canManageCRM          Boolean @default(false)
+  canManageMessages     Boolean @default(true)
+  canManageMaintenance  Boolean @default(false)
+  canManageVisitors     Boolean @default(false)
+  canManageSafeguarding Boolean @default(false)
+  canManageReports      Boolean @default(false)
+
+  isSuperAdmin          Boolean @default(false)
 
   users       User[]
   
