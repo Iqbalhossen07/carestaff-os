@@ -3,9 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, Phone, Mail, Edit, Trash2, UserPlus, Eye, Calendar, User } from "lucide-react";
+import { Search, Phone, Mail, UserPlus, Eye, Calendar, User, Clock } from "lucide-react";
 import { deleteEnquiry, updateEnquiryStatus } from "./actions";
 import Swal from "sweetalert2";
+import { InlineActionButtons } from "@/components/ui/ActionButtons";
 
 export default function CrmListClient({ initialEnquiries }: { initialEnquiries: any[] }) {
   const [search, setSearch] = useState("");
@@ -24,47 +25,62 @@ export default function CrmListClient({ initialEnquiries }: { initialEnquiries: 
   });
 
   const handleDelete = async (id: string) => {
-    const result = await Swal.fire({
-      title: 'Delete this Enquiry?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!'
-    });
-
-    if (result.isConfirmed) {
-      try {
-        const res = await deleteEnquiry(id);
-        if (res.error) throw new Error(res.error);
-        Swal.fire('Deleted!', 'Enquiry has been removed.', 'success');
-        router.refresh();
-      } catch (e: any) {
-        Swal.fire('Error', e.message || 'Failed to delete enquiry.', 'error');
-      }
+    // Note: InlineActionButtons already handles confirmation, but since we are overriding onDelete
+    // We just need to do the API call here because InlineActionButtons does the SweetAlert.
+    try {
+      const res = await deleteEnquiry(id);
+      if (res.error) throw new Error(res.error);
+      Swal.fire('Deleted!', 'Enquiry has been removed.', 'success');
+      router.refresh();
+    } catch (e: any) {
+      Swal.fire('Error', e.message || 'Failed to delete enquiry.', 'error');
     }
   };
 
   const handleStatusChange = async (id: string, newStatus: string) => {
-    try {
-      const res = await updateEnquiryStatus(id, newStatus);
-      if (res.error) throw new Error(res.error);
-      
-      const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
+    if (newStatus === "Visit") {
+      const { value: date } = await Swal.fire({
+        title: 'Schedule a Visit',
+        input: 'datetime-local',
+        inputLabel: 'When will they visit?',
+        showCancelButton: true,
+        inputValidator: (value) => {
+          if (!value) {
+            return 'You need to choose a date!'
+          }
+        }
       });
-      Toast.fire({
-        icon: 'success',
-        title: `Status updated to ${newStatus}`
-      });
-      router.refresh();
-    } catch (e: any) {
-      Swal.fire('Error', e.message || 'Failed to update status.', 'error');
+
+      if (date) {
+        try {
+          const res = await updateEnquiryStatus(id, newStatus, date);
+          if (res.error) throw new Error(res.error);
+          Swal.fire('Scheduled!', `Visit scheduled for ${new Date(date).toLocaleString()}`, 'success');
+          router.refresh();
+        } catch (e: any) {
+          Swal.fire('Error', e.message || 'Failed to update status.', 'error');
+        }
+      }
+    } else {
+      try {
+        const res = await updateEnquiryStatus(id, newStatus);
+        if (res.error) throw new Error(res.error);
+        
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
+        Toast.fire({
+          icon: 'success',
+          title: `Status updated to ${newStatus}`
+        });
+        router.refresh();
+      } catch (e: any) {
+        Swal.fire('Error', e.message || 'Failed to update status.', 'error');
+      }
     }
   };
 
@@ -117,95 +133,107 @@ export default function CrmListClient({ initialEnquiries }: { initialEnquiries: 
           No enquiries found.
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredEnquiries.map((enquiry) => (
-            <div key={enquiry.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-200 flex flex-col h-full">
+            <div key={enquiry.id} className="group bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 overflow-hidden relative">
               
-              {/* Card Header */}
-              <div className="p-5 border-b border-gray-100 flex justify-between items-start">
-                <div className="flex gap-3">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-white flex items-center justify-center font-bold text-lg shadow-sm shrink-0">
+              <div className="p-6 relative">
+                
+                {/* Top Action Buttons (Global Component) */}
+                <div className="absolute top-4 right-4 z-10">
+                  <InlineActionButtons 
+                    editHref={`/dashboard/crm/${enquiry.id}/edit`}
+                    onDelete={() => handleDelete(enquiry.id)}
+                    viewHref={`/dashboard/crm/${enquiry.id}`}
+                    itemName="Enquiry"
+                  />
+                </div>
+
+                <div className="flex flex-col items-center mb-6 pt-4">
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-white flex items-center justify-center font-black text-3xl shadow-sm mb-4">
                     {enquiry.firstName[0]}{enquiry.lastName[0]}
                   </div>
-                  <div>
-                    <h3 className="font-bold text-lg text-gray-900 leading-tight">
-                      {enquiry.firstName} {enquiry.lastName}
-                    </h3>
-                    <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
-                      <Calendar className="w-3 h-3" /> {new Date(enquiry.createdAt).toLocaleDateString()}
-                    </p>
+                  
+                  <h3 className="font-bold text-xl text-gray-900 text-center leading-tight">
+                    {enquiry.firstName} {enquiry.lastName}
+                  </h3>
+                  
+                  <div className="mt-3 flex items-center gap-2">
+                    <select 
+                      value={enquiry.status}
+                      onChange={(e) => handleStatusChange(enquiry.id, e.target.value)}
+                      className={`text-xs font-bold px-3 py-1.5 rounded-full border appearance-none cursor-pointer outline-none shadow-sm ${getStatusColor(enquiry.status)}`}
+                    >
+                      {statuses.map(s => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
-                
-                <select 
-                  value={enquiry.status}
-                  onChange={(e) => handleStatusChange(enquiry.id, e.target.value)}
-                  className={`text-xs font-bold px-2.5 py-1.5 rounded-lg border appearance-none cursor-pointer outline-none ${getStatusColor(enquiry.status)}`}
-                >
-                  {statuses.map(s => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
-              </div>
 
-              {/* Card Body */}
-              <div className="p-5 space-y-4 flex-1">
-                
-                <div className="space-y-2">
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Contact Person</p>
-                  <div className="flex items-center gap-2 text-sm text-gray-700">
-                    <User className="w-4 h-4 text-gray-400" />
-                    <span className="font-medium">{enquiry.contactName || "Not provided"}</span>
+                <div className="space-y-3 bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                  
+                  {enquiry.status === "Visit" && enquiry.visitDate && (
+                    <div className="flex items-center gap-3 text-sm">
+                      <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                        <Clock className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-500 font-medium">Scheduled Visit</p>
+                        <p className="font-semibold text-purple-700 truncate">
+                          {new Date(enquiry.visitDate).toLocaleString(undefined, {
+                            weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                      <User className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-gray-500 font-medium">Contact Person</p>
+                      <p className="font-semibold text-gray-900 truncate">
+                        {enquiry.contactName || "Not provided"}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-700">
-                    <Phone className="w-4 h-4 text-gray-400" />
-                    {enquiry.contactPhone ? (
-                      <a href={`tel:${enquiry.contactPhone}`} className="hover:text-blue-600 hover:underline">{enquiry.contactPhone}</a>
-                    ) : "N/A"}
-                  </div>
-                  {enquiry.contactEmail && (
-                    <div className="flex items-center gap-2 text-sm text-gray-700">
-                      <Mail className="w-4 h-4 text-gray-400" />
-                      <a href={`mailto:${enquiry.contactEmail}`} className="hover:text-blue-600 hover:underline truncate">{enquiry.contactEmail}</a>
+
+                  {(enquiry.contactPhone || enquiry.contactEmail) && (
+                    <div className="flex items-center gap-3 text-sm">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                        <Phone className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-500 font-medium">Contact Info</p>
+                        {enquiry.contactPhone && <p className="font-semibold text-gray-900 truncate">{enquiry.contactPhone}</p>}
+                        {enquiry.contactEmail && <p className="font-semibold text-gray-600 truncate text-xs">{enquiry.contactEmail}</p>}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {enquiry.careRequired && (
+                    <div className="mt-2 pt-2 border-t border-gray-200">
+                       <span className="text-xs font-bold text-gray-500 uppercase">Care: </span>
+                       <span className="text-sm font-semibold text-gray-800">{enquiry.careRequired}</span>
                     </div>
                   )}
                 </div>
 
-                {enquiry.careRequired && (
-                  <div className="pt-2 border-t border-gray-50">
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Care Level</p>
-                    <p className="text-sm text-gray-800 font-medium bg-gray-50 inline-block px-2 py-1 rounded">{enquiry.careRequired}</p>
+                {/* Admit Action */}
+                {enquiry.status !== "Admitted" && enquiry.status !== "Lost" && (
+                  <div className="mt-4 flex justify-center">
+                    <Link 
+                      href={`/dashboard/residents/new?enquiryId=${enquiry.id}&firstName=${encodeURIComponent(enquiry.firstName)}&lastName=${encodeURIComponent(enquiry.lastName)}&contactName=${encodeURIComponent(enquiry.contactName || "")}&phone=${encodeURIComponent(enquiry.contactPhone || "")}&notes=${encodeURIComponent(enquiry.notes || "")}`}
+                      className="w-full flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 py-2.5 rounded-xl text-sm font-bold transition-colors border border-emerald-200 shadow-sm"
+                    >
+                      <UserPlus className="w-4 h-4" /> Admit as Resident
+                    </Link>
                   </div>
                 )}
-              </div>
-
-              {/* Card Footer Actions */}
-              <div className="p-4 border-t border-gray-100 bg-gray-50/50 rounded-b-2xl flex items-center justify-between">
-                <div className="flex items-center gap-1">
-                  <Link 
-                    href={`/dashboard/crm/${enquiry.id}/edit`}
-                    className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                    title="Edit Enquiry"
-                  >
-                    <Edit className="w-5 h-5" />
-                  </Link>
-                  <button 
-                    onClick={() => handleDelete(enquiry.id)}
-                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    title="Delete Enquiry"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                </div>
-
-                {enquiry.status !== "Admitted" && enquiry.status !== "Lost" && (
-                  <Link 
-                    href={`/dashboard/residents/new?enquiryId=${enquiry.id}&firstName=${encodeURIComponent(enquiry.firstName)}&lastName=${encodeURIComponent(enquiry.lastName)}&contactName=${encodeURIComponent(enquiry.contactName || "")}&phone=${encodeURIComponent(enquiry.contactPhone || "")}&notes=${encodeURIComponent(enquiry.notes || "")}`}
-                    className="flex items-center gap-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 px-4 py-2 rounded-lg text-sm font-bold transition-colors shadow-sm border border-emerald-200"
-                  >
-                    <UserPlus className="w-4 h-4" /> Admit Resident
-                  </Link>
-                )}
+                
               </div>
             </div>
           ))}

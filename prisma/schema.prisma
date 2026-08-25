@@ -254,8 +254,9 @@ model Enquiry {
   contactPhone          String?
   contactEmail          String?
   careRequired          String?
+  visitDate             DateTime?
   
-  status                String   @default("New") // New, In Progress, Admitted, Lost
+  status                String   @default("New") // New, In Progress, Visit, Admitted, Lost
   notes                 String?  @db.Text
   
   createdAt             DateTime @default(now())

@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 export async function createEnquiry(data: any) {
   try {
     const {
-      careHomeId, firstName, lastName, contactName, contactPhone, contactEmail, careRequired, notes
+      careHomeId, firstName, lastName, contactName, contactPhone, contactEmail, careRequired, notes, visitDate
     } = data;
 
     if (!firstName || !lastName || !careHomeId) {
@@ -23,6 +23,7 @@ export async function createEnquiry(data: any) {
         contactEmail: contactEmail || null,
         careRequired: careRequired || null,
         notes: notes || null,
+        visitDate: visitDate ? new Date(visitDate) : null,
         status: "New"
       }
     });
@@ -38,7 +39,7 @@ export async function createEnquiry(data: any) {
 export async function updateEnquiry(id: string, data: any) {
   try {
     const {
-      firstName, lastName, contactName, contactPhone, contactEmail, careRequired, notes, status
+      firstName, lastName, contactName, contactPhone, contactEmail, careRequired, notes, status, visitDate
     } = data;
 
     await prisma.enquiry.update({
@@ -51,7 +52,8 @@ export async function updateEnquiry(id: string, data: any) {
         contactEmail: contactEmail || null,
         careRequired: careRequired || null,
         notes: notes || null,
-        status: status || "New"
+        status: status || "New",
+        visitDate: visitDate ? new Date(visitDate) : null,
       }
     });
 
@@ -63,11 +65,16 @@ export async function updateEnquiry(id: string, data: any) {
   }
 }
 
-export async function updateEnquiryStatus(id: string, status: string) {
+export async function updateEnquiryStatus(id: string, status: string, visitDate?: string) {
   try {
+    const dataToUpdate: any = { status };
+    if (visitDate !== undefined) {
+      dataToUpdate.visitDate = visitDate ? new Date(visitDate) : null;
+    }
+    
     await prisma.enquiry.update({
       where: { id },
-      data: { status }
+      data: dataToUpdate
     });
     revalidatePath("/dashboard/crm");
     return { success: true };

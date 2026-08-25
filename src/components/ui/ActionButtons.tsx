@@ -93,3 +93,57 @@ export function ActionMenu({ onEdit, editHref, onDelete, onView, viewHref, itemN
     </div>
   );
 }
+
+export function InlineActionButtons({ onEdit, editHref, onDelete, onView, viewHref, itemName = "item" }: ActionButtonsProps) {
+  const handleDelete = async () => {
+    if (onDelete) {
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: `You won't be able to revert this ${itemName}!`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+      });
+      
+      if (result.isConfirmed) {
+        onDelete();
+      }
+    }
+  };
+
+  return (
+    <div className="flex justify-end gap-1 relative z-10">
+      {(onView || viewHref) && (
+        viewHref ? (
+          <Link href={viewHref} className="p-2 text-gray-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors" title="View Details">
+            <Eye className="w-5 h-5" />
+          </Link>
+        ) : (
+          <button onClick={onView} className="p-2 text-gray-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors" title="View Details">
+            <Eye className="w-5 h-5" />
+          </button>
+        )
+      )}
+
+      {(onEdit || editHref) && (
+        editHref ? (
+          <Link href={editHref} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
+            <Edit className="w-5 h-5" />
+          </Link>
+        ) : (
+          <button onClick={onEdit} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
+            <Edit className="w-5 h-5" />
+          </button>
+        )
+      )}
+
+      {onDelete && (
+        <button onClick={handleDelete} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+          <Trash2 className="w-5 h-5" />
+        </button>
+      )}
+    </div>
+  );
+}
