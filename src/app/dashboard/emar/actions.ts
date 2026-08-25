@@ -3,29 +3,31 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-export async function addMedication(data: any) {
+export async function addMultipleMedications(data: { residentId: string, medications: any[] }) {
   try {
-    const { residentId, name, dosage, frequency, instructions } = data;
+    const { residentId, medications } = data;
 
-    if (!residentId || !name || !dosage) {
+    if (!residentId || !medications || medications.length === 0) {
       return { error: "Missing required fields" };
     }
 
-    await prisma.medication.create({
-      data: {
-        residentId,
-        name,
-        dosage,
-        frequency,
-        instructions: instructions || null,
-      },
+    const payload = medications.map(med => ({
+      residentId,
+      name: med.name,
+      dosage: med.dosage,
+      frequency: med.frequency,
+      instructions: med.instructions || null,
+    }));
+
+    await prisma.medication.createMany({
+      data: payload
     });
 
     revalidatePath("/dashboard/emar");
     return { success: true };
   } catch (error: any) {
-    console.error("ADD MEDICATION ERROR:", error);
-    return { error: error?.message || "Failed to add medication" };
+    console.error("ADD MULTIPLE MEDICATIONS ERROR:", error);
+    return { error: error?.message || "Failed to add medications" };
   }
 }
 
@@ -57,7 +59,6 @@ export async function updateMedication(id: string, data: any) {
 
 export async function deleteMedication(id: string) {
   try {
-    // Delete associated logs first to avoid foreign key constraint errors
     await prisma.emarLog.deleteMany({
       where: { medicationId: id }
     });
