@@ -21,7 +21,7 @@ export async function addMultipleMedications(data: { residentId: string, medicat
       startDate: new Date(med.startDate),
       endDate: med.endDate ? new Date(med.endDate) : null,
       instructions: med.instructions || null,
-      status: "ACTIVE"
+      status: med.status || "ACTIVE"
     }));
 
     await prisma.medication.createMany({

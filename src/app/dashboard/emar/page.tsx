@@ -1,23 +1,19 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { Pill, Plus, Clock, Search, User, Eye, Edit, Trash2 } from "lucide-react";
+import { Pill, Plus, Clock, Search, User, Eye, Settings2 } from "lucide-react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { EmarDateSelector } from "./EmarDateSelector";
-import { LogMedicationButton, EmarActionButtons } from "./EmarClientComponents";
+import { LogMedicationButton } from "./EmarClientComponents";
 
 export default async function EmarOverviewPage({ searchParams }: any) {
   try {
     const session = await getServerSession(authOptions);
-    
-    // Resolve searchParams
     const params = await Promise.resolve(searchParams);
-    
     const todayStr = new Date().toISOString().split('T')[0];
     const selectedDateStr = params?.date || todayStr;
     const searchQ = params?.search || "";
     
-    // Convert selected string back to Date for comparison
     const selectedDate = new Date(selectedDateStr);
     const startOfDay = new Date(selectedDate);
     startOfDay.setHours(0, 0, 0, 0);
@@ -72,7 +68,7 @@ export default async function EmarOverviewPage({ searchParams }: any) {
             </div>
             <div>
               <h1 className="text-2xl font-black text-gray-900">eMAR Daily Chart</h1>
-              <p className="text-gray-500 font-medium text-sm">Electronic Medication Administration Record.</p>
+              <p className="text-gray-500 font-medium text-sm">Medication Administration Round</p>
             </div>
           </div>
 
@@ -92,9 +88,9 @@ export default async function EmarOverviewPage({ searchParams }: any) {
             
             <Link 
               href="/dashboard/emar/new"
-              className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all shadow-sm whitespace-nowrap"
+              className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-sm whitespace-nowrap"
             >
-              <Plus className="w-5 h-5" /> Add Prescription
+              <Settings2 className="w-5 h-5" /> Manage Prescriptions
             </Link>
           </div>
         </div>
@@ -130,15 +126,16 @@ export default async function EmarOverviewPage({ searchParams }: any) {
                   {/* Resident Header */}
                   <div className="px-6 py-4 bg-gray-50/50 border-b border-gray-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-lg shadow-inner shrink-0">
-                        {resident.firstName[0]}{resident.lastName[0]}
-                      </div>
+                      {resident.photo ? (
+                        <img src={resident.photo} alt={resident.firstName} className="w-12 h-12 rounded-full object-cover border border-gray-200 shadow-sm shrink-0" />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-lg shadow-inner shrink-0">
+                          {resident.firstName[0]}{resident.lastName[0]}
+                        </div>
+                      )}
                       <div>
-                        <h2 className="text-lg font-bold text-gray-900 flex items-center gap-3">
+                        <h2 className="text-lg font-bold text-gray-900">
                           {resident.firstName} {resident.lastName}
-                          <Link href={"/dashboard/emar/resident/" + resident.id + "/manage"} className="text-[10px] bg-white border border-gray-300 text-gray-600 px-2.5 py-1 rounded-md hover:bg-gray-100 uppercase tracking-wider shadow-sm font-bold">
-                            Manage List
-                          </Link>
                         </h2>
                         <div className="text-xs text-gray-500 font-semibold flex gap-3 mt-0.5 uppercase tracking-wide">
                           {resident.roomNumber && <span>Room: {resident.roomNumber}</span>}
@@ -179,9 +176,9 @@ export default async function EmarOverviewPage({ searchParams }: any) {
                                   <div className="flex-1 w-full">
                                     <div className="flex items-center justify-between gap-3 mb-2">
                                       <div className="flex items-center gap-3 flex-wrap">
-                                        <Link href={"/dashboard/emar/" + med.id} className="text-base font-black text-gray-900 hover:text-blue-600 transition-colors">
+                                        <span className="text-base font-black text-gray-900">
                                           {med.name}
-                                        </Link>
+                                        </span>
                                         {statusLabel}
                                         {med.mealInstruction && (
                                           <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider border border-purple-200">
@@ -190,13 +187,14 @@ export default async function EmarOverviewPage({ searchParams }: any) {
                                         )}
                                       </div>
                                       
-                                      {/* Action Buttons */}
-                                      <div className="flex items-center gap-1">
-                                        <Link href={"/dashboard/emar/" + med.id} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"><Eye className="w-4 h-4" /></Link>
-                                        <Link href={"/dashboard/emar/" + med.id + "/edit"} className="p-1.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"><Edit className="w-4 h-4" /></Link>
+                                      {/* View Button (History) */}
+                                      <div>
+                                        <Link href={"/dashboard/emar/" + med.id} title="View History" className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors border border-blue-100">
+                                          <Eye className="w-3.5 h-3.5" /> History
+                                        </Link>
                                       </div>
                                     </div>
-                                    <div className="flex flex-wrap gap-2 text-xs">
+                                    <div className="flex flex-wrap gap-2 text-xs mt-3">
                                       <span className="font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded-md border border-gray-200">{med.dosage}</span>
                                       <span className="text-gray-500 font-medium px-2 py-0.5 bg-white border border-gray-200 rounded-md">Route: {med.route}</span>
                                     </div>
