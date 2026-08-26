@@ -1,4 +1,6 @@
-import prisma from "@/lib/prisma";
+const fs = require('fs');
+
+const content = `import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { Pill, Plus, Clock, Search, User, Eye, Settings2 } from "lucide-react";
 import { getServerSession } from "next-auth";
@@ -240,3 +242,5 @@ export default async function EmarOverviewPage({ searchParams }: any) {
     );
   }
 }
+`;
+fs.writeFileSync('src/app/dashboard/emar/page.tsx', content);

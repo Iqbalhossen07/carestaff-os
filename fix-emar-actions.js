@@ -1,4 +1,6 @@
-"use server"
+const fs = require('fs');
+
+const content = `"use server"
 
 import prisma from "@/lib/prisma";
 
@@ -26,3 +28,5 @@ export async function getResidentMedications(residentId: string) {
     return { error: error.message };
   }
 }
+`;
+fs.writeFileSync('src/app/dashboard/emar/new/actions.ts', content);
