@@ -65,28 +65,20 @@ export function LogMedicationButton({ medicationId, residentId, staffId }: { med
   };
 
   return (
-    <div className="flex gap-2">
-      <button 
-        onClick={() => handleAction("ADMINISTERED")}
-        disabled={loading}
-        className="flex-1 px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-lg transition-colors border border-emerald-200 disabled:opacity-50"
-      >
-        Give
-      </button>
-      <button 
-        onClick={() => handleAction("REFUSED")}
-        disabled={loading}
-        className="flex-1 px-4 py-2 bg-orange-50 hover:bg-orange-100 text-orange-700 font-bold rounded-lg transition-colors border border-orange-200 disabled:opacity-50"
-      >
-        Refused
-      </button>
-      <button 
-        onClick={() => handleAction("MISSED")}
-        disabled={loading}
-        className="flex-1 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 font-bold rounded-lg transition-colors border border-red-200 disabled:opacity-50"
-      >
-        Missed
-      </button>
-    </div>
+    <select
+      disabled={loading}
+      onChange={(e) => {
+        if (e.target.value) {
+          handleAction(e.target.value as any);
+          e.target.value = "";
+        }
+      }}
+      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-bold text-gray-700 disabled:opacity-50 cursor-pointer"
+    >
+      <option value="">{loading ? "Saving..." : "Log Action..."}</option>
+      <option value="ADMINISTERED">✓ Give</option>
+      <option value="REFUSED">⚠ Refused</option>
+      <option value="MISSED">✕ Missed</option>
+    </select>
   );
 }

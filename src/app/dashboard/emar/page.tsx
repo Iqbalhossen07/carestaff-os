@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { Pill, Plus, Clock, Search, User, Eye, Settings2 } from "lucide-react";
+import { Pill, Plus, Clock, Search, User, Eye, Settings2, Edit } from "lucide-react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { EmarDateSelector } from "./EmarDateSelector";
@@ -201,6 +201,9 @@ export default async function EmarOverviewPage({ searchParams }: any) {
                                 <div className="flex items-center gap-3 shrink-0 xl:border-l xl:border-gray-100 xl:pl-4">
                                   <Link href={"/dashboard/emar/" + med.id} title="History" className="p-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors">
                                     <Eye className="w-4 h-4" />
+                                  </Link>
+                                  <Link href={"/dashboard/emar/" + med.id + "/edit"} title="Edit" className="p-1.5 text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-md transition-colors">
+                                    <Edit className="w-4 h-4" />
                                   </Link>
                                   <div className="w-[200px]">
                                     <LogMedicationButton 
