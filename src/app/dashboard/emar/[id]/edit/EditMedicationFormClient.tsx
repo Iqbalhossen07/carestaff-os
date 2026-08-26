@@ -45,21 +45,22 @@ export default function EditMedicationFormClient({ medication }: { medication: a
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div className="sm:col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Medication Name *</label>
-          <input type="text" name="name" defaultValue={medication.name} required className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" />
+    <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        
+        <div className="md:col-span-2">
+          <label className="block text-xs font-bold text-gray-700 mb-1">Medication Name *</label>
+          <input type="text" name="name" defaultValue={medication.name} required placeholder="e.g. Paracetamol" className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
         </div>
         
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Dosage *</label>
-          <input type="text" name="dosage" defaultValue={medication.dosage} required className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" />
+          <label className="block text-xs font-bold text-gray-700 mb-1">Dosage *</label>
+          <input type="text" name="dosage" defaultValue={medication.dosage} required placeholder="e.g. 500mg, 2 Puffs" className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
         </div>
         
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Route</label>
-          <select name="route" defaultValue={medication.route || "Oral"} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+          <label className="block text-xs font-bold text-gray-700 mb-1">Route</label>
+          <select name="route" defaultValue={medication.route || "Oral"} className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
             <option value="Oral">Oral (Mouth)</option>
             <option value="Injection">Injection</option>
             <option value="Topical">Topical (Skin)</option>
@@ -69,10 +70,9 @@ export default function EditMedicationFormClient({ medication }: { medication: a
           </select>
         </div>
 
-        
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Meal Instruction</label>
-          <select name="mealInstruction" defaultValue={medication.mealInstruction || ""} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+          <label className="block text-xs font-bold text-gray-700 mb-1">Meal Instruction</label>
+          <select name="mealInstruction" defaultValue={medication.mealInstruction || ""} className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
             <option value="">-- Select --</option>
             <option value="Before Meal">Before Meal</option>
             <option value="After Meal">After Meal</option>
@@ -82,8 +82,8 @@ export default function EditMedicationFormClient({ medication }: { medication: a
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Frequency (Time) *</label>
-          <select name="frequency" defaultValue={medication.frequency} required className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+          <label className="block text-xs font-bold text-gray-700 mb-1">Frequency (Time) *</label>
+          <select name="frequency" defaultValue={medication.frequency} required className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
             <option value="Morning">Morning</option>
             <option value="Afternoon">Afternoon</option>
             <option value="Evening">Evening</option>
@@ -94,37 +94,37 @@ export default function EditMedicationFormClient({ medication }: { medication: a
             <option value="As Needed (PRN)">As Needed (PRN)</option>
           </select>
         </div>
-        
+
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-          <select name="status" defaultValue={medication.status || "ACTIVE"} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+          <label className="block text-xs font-bold text-gray-700 mb-1">Start Date *</label>
+          <input type="date" name="startDate" defaultValue={toLocalDate(medication.startDate)} required className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-gray-700 mb-1">End Date (Optional)</label>
+          <input type="date" name="endDate" defaultValue={toLocalDate(medication.endDate)} className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="block text-xs font-bold text-gray-700 mb-1">Instructions (Optional)</label>
+          <input type="text" name="instructions" defaultValue={medication.instructions || ""} placeholder="e.g. Take with food" className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+        </div>
+        
+        <div className="md:col-span-2">
+          <label className="block text-xs font-bold text-gray-700 mb-1">Status</label>
+          <select name="status" defaultValue={medication.status || "ACTIVE"} className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
             <option value="ACTIVE">Active</option>
             <option value="DISCONTINUED">Discontinued</option>
             <option value="COMPLETED">Completed</option>
           </select>
         </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Start Date *</label>
-          <input type="date" name="startDate" defaultValue={toLocalDate(medication.startDate)} required className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">End Date (Optional)</label>
-          <input type="date" name="endDate" defaultValue={toLocalDate(medication.endDate)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" />
-        </div>
-
-        <div className="sm:col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Instructions (Optional)</label>
-          <input type="text" name="instructions" defaultValue={medication.instructions || ""} placeholder="e.g. Take with food" className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" />
-        </div>
       </div>
 
       <div className="pt-4 flex justify-end gap-3 border-t border-gray-100">
-        <Link href="/dashboard/emar" className="px-6 py-2.5 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium transition-colors">
+        <Link href="/dashboard/emar" className="px-6 py-2.5 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl font-bold transition-colors">
           Cancel
         </Link>
-        <button type="submit" disabled={loading} className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors disabled:opacity-50 shadow-sm">
+        <button type="submit" disabled={loading} className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-colors disabled:opacity-50 shadow-sm">
           {loading ? "Saving..." : "Save Changes"}
         </button>
       </div>

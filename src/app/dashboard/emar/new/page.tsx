@@ -15,7 +15,7 @@ export default async function AddMedicationPage() {
   });
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-5xl mx-auto">
       <Link href="/dashboard/emar" className="text-gray-500 hover:text-gray-800 flex items-center gap-2 mb-6 w-fit text-sm font-medium">
         <ArrowLeft className="w-4 h-4" /> Back to eMAR Overview
       </Link>
