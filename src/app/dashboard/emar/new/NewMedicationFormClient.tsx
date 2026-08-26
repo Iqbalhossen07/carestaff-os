@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { addMultipleMedications } from "../actions";
 import { getResidentMedications } from "./actions";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Plus, Trash2, Info } from "lucide-react";
 import Swal from "sweetalert2";
 
