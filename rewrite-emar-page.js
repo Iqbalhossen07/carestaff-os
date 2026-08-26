@@ -1,4 +1,5 @@
-import prisma from "@/lib/prisma";
+const fs = require('fs');
+const content = `import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { Pill, Plus, Clock, Search, User } from "lucide-react";
 import { getServerSession } from "next-auth";
@@ -84,7 +85,7 @@ export default async function EmarOverviewPage({ searchParams }: any) {
                 type="text" 
                 name="search"
                 defaultValue={searchQ}
-                placeholder="Search Name, Room, NHS..." 
+                placeholder="Search by Name, Room, NHS..." 
                 className="w-full md:w-64 pl-9 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium"
               />
             </form>
@@ -137,7 +138,7 @@ export default async function EmarOverviewPage({ searchParams }: any) {
                       <div>
                         <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                           {resident.firstName} {resident.lastName}
-                          <Link href={"/dashboard/emar/resident/" + resident.id + "/manage"} className="text-[10px] bg-white border border-gray-200 text-gray-600 px-2 py-0.5 rounded-full hover:bg-gray-50 uppercase tracking-wide shrink-0">
+                          <Link href={`/dashboard/emar/resident/${resident.id}/manage`} className="text-[10px] bg-white border border-gray-200 text-gray-600 px-2 py-0.5 rounded-full hover:bg-gray-50 uppercase tracking-wide shrink-0">
                             Manage List
                           </Link>
                         </h2>
@@ -152,7 +153,7 @@ export default async function EmarOverviewPage({ searchParams }: any) {
                   {/* Medications Content */}
                   <div className="p-0">
                     {!hasMeds ? (
-                      <div className="p-8 text-center bg-gray-50/50 border-t border-gray-200">
+                      <div className="p-8 text-center bg-gray-50/50">
                         <p className="text-gray-400 font-medium italic">No medications scheduled for {selectedDateStr}.</p>
                       </div>
                     ) : (
@@ -183,7 +184,7 @@ export default async function EmarOverviewPage({ searchParams }: any) {
 
                                   <div className="flex-1 pr-0 xl:pr-32">
                                     <div className="flex items-center gap-3 mb-2 flex-wrap">
-                                      <Link href={"/dashboard/emar/" + med.id} className="text-lg font-black text-gray-900 hover:text-blue-600 transition-colors">
+                                      <Link href={`/dashboard/emar/${med.id}`} className="text-lg font-black text-gray-900 hover:text-blue-600 transition-colors">
                                         {med.name}
                                       </Link>
                                       {statusLabel}
@@ -204,22 +205,17 @@ export default async function EmarOverviewPage({ searchParams }: any) {
                                     )}
                                   </div>
 
-                                  <div className="w-full xl:w-[320px] shrink-0 mt-4 xl:mt-0 xl:border-l xl:border-gray-100 xl:pl-6 relative">
-                                    <div className="hidden xl:block absolute -top-4 -right-2">
-                                      <EmarActionButtons medicationId={med.id} />
-                                    </div>
-                                    <div className="mt-8 xl:mt-6">
-                                      <LogMedicationButton 
-                                        medicationId={med.id}
-                                        residentId={resident.id}
-                                        staffId={session?.user?.id as string}
-                                      />
-                                      {todaysLog && todaysLog.refusalReason && (
-                                        <p className="mt-3 text-xs text-orange-700 bg-orange-50 p-2 rounded-lg border border-orange-100">
-                                          <strong>Reason:</strong> {todaysLog.refusalReason}
-                                        </p>
-                                      )}
-                                    </div>
+                                  <div className="w-full xl:w-[320px] shrink-0 mt-4 xl:mt-0 xl:border-l xl:border-gray-100 xl:pl-6">
+                                    <LogMedicationButton 
+                                      medicationId={med.id}
+                                      residentId={resident.id}
+                                      staffId={session?.user?.id as string}
+                                    />
+                                    {todaysLog && todaysLog.refusalReason && (
+                                      <p className="mt-3 text-xs text-orange-700 bg-orange-50 p-2 rounded-lg border border-orange-100">
+                                        <strong>Reason:</strong> {todaysLog.refusalReason}
+                                      </p>
+                                    )}
                                   </div>
                                 </div>
                               );
@@ -252,3 +248,5 @@ export default async function EmarOverviewPage({ searchParams }: any) {
     );
   }
 }
+`;
+fs.writeFileSync('src/app/dashboard/emar/page.tsx', content);

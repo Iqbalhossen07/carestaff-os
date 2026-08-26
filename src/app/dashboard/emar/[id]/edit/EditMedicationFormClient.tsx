@@ -24,6 +24,7 @@ export default function EditMedicationFormClient({ medication }: { medication: a
       dosage: formData.get("dosage") as string,
       frequency: formData.get("frequency") as string,
       route: formData.get("route") as string,
+      mealInstruction: formData.get("mealInstruction") as string,
       startDate: formData.get("startDate") as string,
       endDate: formData.get("endDate") as string,
       status: formData.get("status") as string,
@@ -65,6 +66,18 @@ export default function EditMedicationFormClient({ medication }: { medication: a
             <option value="Inhalation">Inhalation</option>
             <option value="Drops">Drops</option>
             <option value="Other">Other</option>
+          </select>
+        </div>
+
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Meal Instruction</label>
+          <select name="mealInstruction" defaultValue={medication.mealInstruction || ""} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+            <option value="">-- Select --</option>
+            <option value="Before Meal">Before Meal</option>
+            <option value="After Meal">After Meal</option>
+            <option value="With Meal">With Meal</option>
+            <option value="Anytime">Anytime</option>
           </select>
         </div>
 

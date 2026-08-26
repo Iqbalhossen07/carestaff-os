@@ -20,7 +20,7 @@ export default function ManageMedicationsClient({ residentId, existingMedication
     id: m.id,
     name: m.name,
     dosage: m.dosage,
-    route: m.route || "Oral",
+    route: m.route || "Oral", mealInstruction: m.mealInstruction || "",
     frequency: m.frequency,
     startDate: toLocalDate(m.startDate),
     endDate: toLocalDate(m.endDate),
@@ -29,13 +29,13 @@ export default function ManageMedicationsClient({ residentId, existingMedication
   }));
 
   const [medications, setMedications] = useState(initialMeds.length > 0 ? initialMeds : [
-    { id: `new-${Date.now()}`, name: "", dosage: "", route: "Oral", frequency: "Morning", startDate: new Date().toISOString().split('T')[0], endDate: "", status: "ACTIVE", instructions: "" }
+    { id: `new-${Date.now()}`, name: "", dosage: "", route: "Oral", mealInstruction: "", frequency: "Morning", startDate: new Date().toISOString().split('T')[0], endDate: "", status: "ACTIVE", instructions: "" }
   ]);
   const [deletedIds, setDeletedIds] = useState<string[]>([]);
 
   const handleAddRow = () => {
     setMedications([...medications, { 
-      id: `new-${Date.now()}`, name: "", dosage: "", route: "Oral", frequency: "Morning", startDate: new Date().toISOString().split('T')[0], endDate: "", status: "ACTIVE", instructions: "" 
+      id: `new-${Date.now()}`, name: "", dosage: "", route: "Oral", mealInstruction: "", frequency: "Morning", startDate: new Date().toISOString().split('T')[0], endDate: "", status: "ACTIVE", instructions: "" 
     }]);
   };
 
@@ -116,6 +116,18 @@ export default function ManageMedicationsClient({ residentId, existingMedication
                 <option value="Inhalation">Inhalation</option>
                 <option value="Drops">Drops</option>
                 <option value="Other">Other</option>
+              </select>
+            </div>
+
+            
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Meal Instruction</label>
+              <select value={med.mealInstruction} onChange={(e) => handleChange(index, 'mealInstruction', e.target.value)} className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                <option value="">-- Select --</option>
+                <option value="Before Meal">Before Meal</option>
+                <option value="After Meal">After Meal</option>
+                <option value="With Meal">With Meal</option>
+                <option value="Anytime">Anytime</option>
               </select>
             </div>
 

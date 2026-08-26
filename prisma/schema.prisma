@@ -139,6 +139,7 @@ model Medication {
   startDate   DateTime @default(now())
   endDate     DateTime?
   route       String   @default("Oral")
+  mealInstruction String?
   status      String   @default("ACTIVE")
   
   residentId  String

@@ -31,7 +31,8 @@ export async function saveResidentMedicationsBulk(data: {
         startDate: new Date(med.startDate),
         endDate: med.endDate ? new Date(med.endDate) : null,
         instructions: med.instructions || null,
-        status: med.status || "ACTIVE"
+        status: med.status || "ACTIVE",
+        mealInstruction: med.mealInstruction || null
       };
 
       if (med.id && !med.id.startsWith('new-')) {

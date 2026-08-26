@@ -17,6 +17,7 @@ export async function addMultipleMedications(data: { residentId: string, medicat
       dosage: med.dosage,
       frequency: med.frequency,
       route: med.route || "Oral",
+      mealInstruction: med.mealInstruction || null,
       startDate: new Date(med.startDate),
       endDate: med.endDate ? new Date(med.endDate) : null,
       instructions: med.instructions || null,
@@ -37,7 +38,7 @@ export async function addMultipleMedications(data: { residentId: string, medicat
 
 export async function updateMedication(id: string, data: any) {
   try {
-    const { name, dosage, frequency, route, startDate, endDate, status, instructions } = data;
+    const { name, dosage, frequency, route, mealInstruction, startDate, endDate, status, instructions } = data;
 
     if (!name || !dosage) {
       return { error: "Missing required fields" };
@@ -50,6 +51,7 @@ export async function updateMedication(id: string, data: any) {
         dosage,
         frequency,
         route,
+        mealInstruction: mealInstruction || null,
         startDate: new Date(startDate),
         endDate: endDate ? new Date(endDate) : null,
         status,

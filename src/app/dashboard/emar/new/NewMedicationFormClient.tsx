@@ -17,7 +17,7 @@ export default function NewMedicationFormClient({ residents }: { residents: any[
   const today = new Date().toISOString().split('T')[0];
 
   const [medications, setMedications] = useState([
-    { name: "", dosage: "", frequency: "Morning", route: "Oral", startDate: today, endDate: "", instructions: "" }
+    { name: "", dosage: "", frequency: "Morning", route: "Oral", mealInstruction: "", startDate: today, endDate: "", instructions: "" }
   ]);
 
   if (residents.length === 0) {
@@ -30,7 +30,7 @@ export default function NewMedicationFormClient({ residents }: { residents: any[
   }
 
   const handleAddRow = () => {
-    setMedications([...medications, { name: "", dosage: "", frequency: "Morning", route: "Oral", startDate: today, endDate: "", instructions: "" }]);
+    setMedications([...medications, { name: "", dosage: "", frequency: "Morning", route: "Oral", mealInstruction: "", startDate: today, endDate: "", instructions: "" }]);
   };
 
   const handleRemoveRow = (index: number) => {
@@ -146,6 +146,22 @@ export default function NewMedicationFormClient({ residents }: { residents: any[
                   <option value="Inhalation">Inhalation</option>
                   <option value="Drops">Drops</option>
                   <option value="Other">Other</option>
+                </select>
+              </div>
+
+              
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">Meal Instruction</label>
+                <select 
+                  value={med.mealInstruction}
+                  onChange={(e) => handleChange(index, 'mealInstruction', e.target.value)}
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                >
+                  <option value="">-- Select --</option>
+                  <option value="Before Meal">Before Meal</option>
+                  <option value="After Meal">After Meal</option>
+                  <option value="With Meal">With Meal</option>
+                  <option value="Anytime">Anytime</option>
                 </select>
               </div>
 
