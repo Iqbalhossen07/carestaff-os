@@ -101,15 +101,15 @@ export default function ManageMedicationsClient({ residentId, existingMedication
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="md:col-span-2">
               <label className="block text-xs font-bold text-gray-700 mb-1">Medication Name *</label>
-              <input type="text" required value={med.name} onChange={(e) => handleChange(index, 'name', e.target.value)} placeholder="e.g. Paracetamol" className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+              <input type="text" required value={med.name} onChange={(e) => handleChange(index, 'name', e.target.value)} placeholder="e.g. Paracetamol" className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold text-gray-700" />
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">Dosage *</label>
-              <input type="text" required value={med.dosage} onChange={(e) => handleChange(index, 'dosage', e.target.value)} placeholder="e.g. 500mg" className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+              <input type="text" required value={med.dosage} onChange={(e) => handleChange(index, 'dosage', e.target.value)} placeholder="e.g. 500mg" className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold text-gray-700" />
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">Route</label>
-              <select value={med.route} onChange={(e) => handleChange(index, 'route', e.target.value)} className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+              <select value={med.route} onChange={(e) => handleChange(index, 'route', e.target.value)} className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold text-gray-700">
                 <option value="Oral">Oral (Mouth)</option>
                 <option value="Injection">Injection</option>
                 <option value="Topical">Topical (Skin)</option>
@@ -122,7 +122,7 @@ export default function ManageMedicationsClient({ residentId, existingMedication
             
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">Meal Instruction</label>
-              <select value={med.mealInstruction} onChange={(e) => handleChange(index, 'mealInstruction', e.target.value)} className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+              <select value={med.mealInstruction} onChange={(e) => handleChange(index, 'mealInstruction', e.target.value)} className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold text-gray-700">
                 <option value="">-- Select --</option>
                 <option value="Before Meal">Before Meal</option>
                 <option value="After Meal">After Meal</option>
@@ -133,7 +133,7 @@ export default function ManageMedicationsClient({ residentId, existingMedication
 
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">Frequency (Time) *</label>
-              <select required value={med.frequency} onChange={(e) => handleChange(index, 'frequency', e.target.value)} className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+              <select required value={med.frequency} onChange={(e) => handleChange(index, 'frequency', e.target.value)} className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold text-gray-700">
                 <option value="Morning">Morning</option>
                 <option value="Afternoon">Afternoon</option>
                 <option value="Evening">Evening</option>
@@ -147,17 +147,17 @@ export default function ManageMedicationsClient({ residentId, existingMedication
             
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">Start Date *</label>
-              <input type="date" required value={med.startDate} onChange={(e) => handleChange(index, 'startDate', e.target.value)} className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+              <input type="date" required value={med.startDate} onChange={(e) => handleChange(index, 'startDate', e.target.value)} className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold text-gray-700" />
             </div>
 
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">End Date (Optional)</label>
-              <input type="date" value={med.endDate} onChange={(e) => handleChange(index, 'endDate', e.target.value)} className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+              <input type="date" value={med.endDate} onChange={(e) => handleChange(index, 'endDate', e.target.value)} className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold text-gray-700" />
             </div>
 
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">Status</label>
-              <select value={med.status} onChange={(e) => handleChange(index, 'status', e.target.value)} className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+              <select value={med.status} onChange={(e) => handleChange(index, 'status', e.target.value)} className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold text-gray-700">
                 <option value="ACTIVE">Active</option>
                 <option value="DISCONTINUED">Discontinued</option>
                 <option value="COMPLETED">Completed</option>
@@ -166,7 +166,7 @@ export default function ManageMedicationsClient({ residentId, existingMedication
 
             <div className="md:col-span-4">
               <label className="block text-xs font-bold text-gray-700 mb-1">Instructions (Optional)</label>
-              <input type="text" value={med.instructions} onChange={(e) => handleChange(index, 'instructions', e.target.value)} placeholder="e.g. Take after food" className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+              <input type="text" value={med.instructions} onChange={(e) => handleChange(index, 'instructions', e.target.value)} placeholder="e.g. Take after food" className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold text-gray-700" />
             </div>
           </div>
         </div>

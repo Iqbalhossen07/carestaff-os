@@ -73,7 +73,7 @@ export function LogMedicationButton({ medicationId, residentId, staffId }: { med
           e.target.value = "";
         }
       }}
-      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-bold text-gray-700 disabled:opacity-50 cursor-pointer"
+      className="w-full px-2.5 py-1.5 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-md focus:ring-2 focus:ring-indigo-500 outline-none text-xs font-bold disabled:opacity-50 cursor-pointer hover:bg-indigo-100 transition-colors shadow-sm"
     >
       <option value="">{loading ? "Saving..." : "Log Action..."}</option>
       <option value="ADMINISTERED">✓ Give</option>
